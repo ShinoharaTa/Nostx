@@ -1,0 +1,33 @@
+@font-face {
+  font-family: 'default-font';
+  src: url('/font/LINESeedJP_OTF_Bd.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'bold-font';
+  src: url('/font/LINESeedJP_OTF_Eb.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'normal-font';
+  src: url('/font/LINESeedJP_OTF_Th.woff') format('woff');
+}
+
+:root,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'default-font';
+}
+
+h1 {
+  font-family: 'bold-font';
+}
+
+button {
+  font-family: "normal-font";
+}
