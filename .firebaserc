@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "prod": "nostrtransport"
+  },
+  "targets": {
+    "nostrtransport": {
+      "hosting": {
+        "stg": [
+          "nostrtransport-stg"
+        ],
+        "prod": [
+          "nostrtransport"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
