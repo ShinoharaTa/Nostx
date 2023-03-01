@@ -3,7 +3,7 @@
     <div>クライアントを選択</div>
     <div class="row mt-4">
       <div
-        class="py-3 col-6 col-md-3"
+        class="py-3 col-6"
         :class="{ 'bg-primary text-white': select === 1 }"
         @click="select = 1"
       >
@@ -20,7 +20,7 @@
       </div>
 
       <div
-        class="py-3 col-6 col-md-3"
+        class="py-3 col-6"
         :class="{ 'bg-primary text-white': select === 2 }"
         @click="select = 2"
       >

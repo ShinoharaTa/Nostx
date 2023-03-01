@@ -24,10 +24,14 @@ h6 {
   font-family: 'default-font';
 }
 
-h1 {
+.h1 {
   font-family: 'bold-font';
 }
 
 button {
   font-family: "normal-font";
+}
+
+.container {
+  max-width: 600px;
 }

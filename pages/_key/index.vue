@@ -1,14 +1,25 @@
 <template>
   <div class="container">
     <div class="mt-5 py-3 h1 text-center">NosTx</div>
+    <div v-if="error" class="text-danger text-center mt-4">
+      おっと、URLがおかしいぞ？
+    </div>
     <SelectModal @selected="selected" />
     <!-- <a href="nostr://npub1sn0wdenkukak0d9dfczzeacvhkrgz92ak56egt7vdgzn8pv2wfqqhrjdv9">scheme</a> -->
+    <div class="mt-4 text-center">
+      設定を変えるには <a href="https://nostx.shino3.net">https://nostx.shino3.net</a> にアクセスしよう
+    </div>
   </div>
 </template>
 
 <script>
 
 export default {
+  data () {
+    return {
+      error: false,
+    }
+  },
   mounted() {
     let select = this.$cookies.get('selected')
     console.log(select);
@@ -45,7 +56,8 @@ export default {
           // }
         }
       }
-      this.$router.push("/");
+      // this.$router.push("/");
+      this.error = true;
     },
   },
 }
