@@ -1,17 +1,17 @@
-@font-face {
-  font-family: 'default-font';
-  src: url('/font/LINESeedJP_OTF_Bd.woff') format('woff');
-}
+// @font-face {
+//   font-family: 'default-font';
+//   src: url('/font/LINESeedJP_OTF_Bd.woff') format('woff');
+// }
 
-@font-face {
-  font-family: 'bold-font';
-  src: url('/font/LINESeedJP_OTF_Eb.woff') format('woff');
-}
+// @font-face {
+//   font-family: 'bold-font';
+//   src: url('/font/LINESeedJP_OTF_Eb.woff') format('woff');
+// }
 
-@font-face {
-  font-family: 'normal-font';
-  src: url('/font/LINESeedJP_OTF_Th.woff') format('woff');
-}
+// @font-face {
+//   font-family: 'normal-font';
+//   src: url('/font/LINESeedJP_OTF_Th.woff') format('woff');
+// }
 
 :root,
 body,
@@ -21,17 +21,22 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'default-font';
+  // font-family: 'default-font';
 }
 
 .h1 {
-  font-family: 'bold-font';
+  // font-family: 'bold-font';
+}
+
+body {
+  background-color: #fafafa;
 }
 
 button {
-  font-family: "normal-font";
+  // font-family: "normal-font";
 }
 
-.container {
-  max-width: 600px;
+.page {
+  width: 100%;
+  height: 100vh;
 }

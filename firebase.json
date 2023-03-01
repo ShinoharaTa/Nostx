@@ -3,6 +3,12 @@
     {
       "target": "stg",
       "public": "public",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -12,6 +18,12 @@
     {
       "target": "prod",
       "public": "public",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
       "ignore": [
         "firebase.json",
         "**/.*",
