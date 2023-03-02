@@ -40,20 +40,23 @@
                 </div>
                 <div class="mt-3">Snort.social</div>
               </div>
-              <!-- <div
-              class="py-3 col-6 col-md-3"
-              :class="{ 'bg-primary text-white': select === 3 }"
-              @click="select = 3"
-            >
-              <div class="mt-3">Amethyst/Android</div>
-            </div>
-            <div
-              class="py-3 col-6 col-md-3"
-              :class="{ 'bg-primary text-white': select === 4 }"
-              @click="select = 4"
-            >
-              <div class="mt-3">Damus/iOS</div>
-            </div> -->
+              <div
+                v-if="isSmartPhone"
+                class="py-3 col-12"
+                :class="{ 'bg-primary text-white': select === 3 }"
+                @click="select = 3"
+              >
+                <div class="d-flex justify-content-center">
+                  <div class="w-50 bg-white icon">
+                    <!-- <img
+                      src="https://media.discordapp.net/attachments/536423734144401422/1080365959707099136/nostrich_512.png"
+                      alt=""
+                      class="img-fluid"
+                    /> -->
+                  </div>
+                </div>
+                <div class="">アプリで開く</div>
+              </div>
             </div>
           </template>
           <div class="text-danger mt-4 py-3" v-else>
@@ -119,6 +122,15 @@ export default {
       error: false,
     }
   },
+  computed: {
+    isSmartPhone: function () {
+      return (
+        (navigator.userAgent.indexOf('iPhone') > 0 &&
+          navigator.userAgent.indexOf('iPad') == -1) ||
+        navigator.userAgent.indexOf('Android') > 0
+      )
+    },
+  },
   mounted() {
     this.select = this.$cookies.get('selected')
     if (this.active) {
@@ -152,6 +164,9 @@ export default {
           if (this.select === 2) {
             window.location.href = 'https://snort.social/p/' + key
           }
+          if (this.select === 3) {
+            window.location.href = 'nostr:' + key
+          }
           // if (select === 3) {
           // window.location.href("nostr://" + key);
           // }
@@ -162,6 +177,9 @@ export default {
           }
           if (this.select === 2) {
             window.location.href = 'https://snort.social/e/' + key
+          }
+          if (this.select === 3) {
+            window.location.href = 'nostr:' + key
           }
           // if (select === 3) {
           // window.location.href("nostr://" + key);
