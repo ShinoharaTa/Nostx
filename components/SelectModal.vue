@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 mt-5">
+  <div class="px-4 pt-5">
     <div class="">
       <div class="text-center">
         <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="" />
