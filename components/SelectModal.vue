@@ -1,111 +1,100 @@
 <template>
-  <div class="modal text-center d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="mt-4 h1 text-center">NosTx</div>
-          <template v-if="!error">
-            <div class="mt-3">クライアントを選択</div>
-            <div class="row mt-4 px-4">
-              <div
-                class="py-3 col-6"
-                :class="{ 'bg-primary text-white': select === 1 }"
-                @click="select = 1"
-              >
-                <div class="d-flex justify-content-center">
-                  <div class="w-50 bg-white icon">
-                    <img
-                      src="https://media.discordapp.net/attachments/536423734144401422/1080365850810396693/3f213087732422818ea1f7bfc2345c5a.png"
-                      alt=""
-                      class="img-fluid"
-                    />
-                  </div>
-                </div>
-                <div class="mt-3">Iris.to</div>
-              </div>
-
-              <div
-                class="py-3 col-6"
-                :class="{ 'bg-primary text-white': select === 2 }"
-                @click="select = 2"
-              >
-                <div class="d-flex justify-content-center">
-                  <div class="w-50 bg-white icon">
-                    <img
-                      src="https://media.discordapp.net/attachments/536423734144401422/1080365959707099136/nostrich_512.png"
-                      alt=""
-                      class="img-fluid"
-                    />
-                  </div>
-                </div>
-                <div class="mt-3">Snort.social</div>
-              </div>
-              <div
-                v-if="isSmartPhone"
-                class="py-3 col-12"
-                :class="{ 'bg-primary text-white': select === 3 }"
-                @click="select = 3"
-              >
-                <div class="d-flex justify-content-center">
-                  <div class="w-50 bg-white icon">
-                    <!-- <img
-                      src="https://media.discordapp.net/attachments/536423734144401422/1080365959707099136/nostrich_512.png"
-                      alt=""
-                      class="img-fluid"
-                    /> -->
-                  </div>
-                </div>
-                <div class="">アプリで開く</div>
-              </div>
-            </div>
-          </template>
-          <div class="text-danger mt-4 py-3" v-else>
-            URLにエラーがあります<br />
-            確認が必要です
-          </div>
-          <div class="mt-4 text-center note" v-if="this.active">
-            設定を変えるときは以下のURL <br />
-            <a href="https://nostx.shino3.net">https://nostx.shino3.net</a>
-          </div>
-        </div>
-        <div class="modal-footer" v-if="!error">
-          <div class="">
-            <input
-              type="checkbox"
-              id="select_0"
-              name="select_0"
-              v-model="select_opt"
-            />
-            <label for="select_0" class="">常にこのアプリを使用する</label>
-          </div>
-          <div class="ms-3" v-if="active">
-            <button
-              class="btn btn-primary px-3"
-              @click="selected"
-              :disabled="select < 1 && select > 4"
-            >
-              開く
-            </button>
-          </div>
-          <div v-else>
-            <button
-              class="btn btn-primary px-3"
-              @click="selected"
-              :disabled="select < 1 && select > 4"
-            >
-              設定を変更
-            </button>
-          </div>
-        </div>
-        <div class="modal-footer" v-else>
-          <button
-            class="btn btn-outline-secondary px-3"
-            @click="$router.back()"
-          >
-            もどる
-          </button>
-        </div>
+  <div class="px-4 pb-5">
+    <div class="">
+      <div class="text-center">
+        <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="" />
       </div>
+      <template v-if="!error">
+        <div class="mt-5 text-center">クライアントを選択</div>
+        <div
+          class="item mt-3"
+          :class="{ selected: select === 1 }"
+          @click="select = 1"
+        >
+          <div class="d-flex align-items-center">
+            <div class="bg-white app_icon">
+              <img
+                src="https://media.discordapp.net/attachments/536423734144401422/1080365850810396693/3f213087732422818ea1f7bfc2345c5a.png"
+                alt=""
+                class="img-fluid"
+              />
+            </div>
+            <div class="app_text">Iris.to</div>
+          </div>
+        </div>
+
+        <div
+          class="item mt-3"
+          :class="{ selected: select === 2 }"
+          @click="select = 2"
+        >
+          <div class="d-flex align-items-center">
+            <div class="bg-white app_icon">
+              <img
+                src="https://media.discordapp.net/attachments/536423734144401422/1080365959707099136/nostrich_512.png"
+                alt=""
+                class="img-fluid"
+              />
+            </div>
+            <div class="app_text">Snort.social</div>
+          </div>
+        </div>
+        <div
+          v-if="isSmartPhone"
+          class="item mt-3"
+          :class="{ selected: select === 3 }"
+          @click="select = 3"
+        >
+          <div class="d-flex align-items-center">
+            <div class="bg-white app_icon add-padding">
+              <img src="/image/app_icon.svg" alt="" class="img-fluid" />
+            </div>
+            <div class="app_text">アプリで開く</div>
+          </div>
+        </div>
+      </template>
+      <div class="text-danger mt-4 py-3" v-else>
+        URLにエラーがあります<br />
+        確認が必要です
+      </div>
+      <div class="mt-4 text-center note text-white" v-if="this.active">
+        設定を変えるときは以下のURL <br />
+        <a href="https://nostx.shino3.net">https://nostx.shino3.net</a>
+      </div>
+    </div>
+    <div class="text-center mt-4" v-if="!error">
+      <div class="mt-3 text-white">
+        <input
+          type="checkbox"
+          id="select_0"
+          name="select_0"
+          v-model="select_opt"
+        />
+        <label for="select_0" class="">常にこのアプリを使用する</label>
+      </div>
+      <div class="mt-5" v-if="active">
+        <button
+          class="btn bg-brand px-3"
+          @click="selected"
+          :disabled="select < 1 && select > 4"
+        >
+          開く
+        </button>
+      </div>
+      <div v-else class="mt-5">
+        <button
+          class="btn bg-brand px-3"
+          @click="selected"
+          :disabled="select < 1 && select > 4"
+        >
+          設定を変更
+        </button>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end" v-else>
+      <button class="btn btn-outline-secondary px-3" @click="$router.back()">
+        もどる
+      </button>
     </div>
   </div>
 </template>
@@ -196,18 +185,49 @@ input[type='radio'] {
   display: none;
 }
 
-.icon {
+.item {
+  background: #222;
+  border-radius: 12px;
+  padding: 1rem 2.5rem;
+  border: 1px #444 solid;
+}
+
+.app_icon {
   border-radius: 50%;
   overflow: hidden;
+  border: 4px solid #eee;
+  width: 48px;
+  margin-right: 2rem;
+}
+
+.app_text {
+  font-size: 20px;
+}
+
+.add-padding {
+  padding: 5px;
 }
 
 .note {
-  font-family: 'normal-font';
-  font-size: 0.8rem;
+  font-size: 1rem;
   line-height: 1.5rem;
 }
 
 .modal-content {
   box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.25);
+}
+
+.selected {
+  background-color: #673ab7c0;
+  border: 1px #673ab7 solid;
+}
+
+.bg-brand {
+  color: #fff;
+  background-color: #7c4dff;
+}
+
+a {
+  color: #ccc;
 }
 </style>
