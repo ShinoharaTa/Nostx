@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 pb-5">
+  <div class="px-4 mt-5">
     <div class="">
       <div class="text-center">
         <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="" />
@@ -53,9 +53,16 @@
           </div>
         </div>
       </template>
-      <div class="text-danger mt-4 py-3" v-else>
-        URLにエラーがあります<br />
-        確認が必要です
+      <div class="text-danger text-center mt-5 py-4 px-5 border border-danger item" v-else>
+        <div class="d-flex align-items-center justify-content-center">
+          <div class="bg-white error_icon">
+            <img src="/image/error_icon.jpg" alt="" class="img-fluid" />
+          </div>
+        </div>
+        <div class="mt-4">
+          URLにエラーがあります<br />
+          確認が必要です
+        </div>
       </div>
       <div class="mt-4 text-center note text-white" v-if="this.active">
         設定を変えるときは以下のURL <br />
@@ -72,18 +79,18 @@
         />
         <label for="select_0" class="">常にこのアプリを使用する</label>
       </div>
-      <div class="mt-5" v-if="active">
+      <div class="mt-4" v-if="active">
         <button
-          class="btn bg-brand px-3"
+          class="btn btn-lg bg-brand px-4"
           @click="selected"
           :disabled="select < 1 && select > 4"
         >
-          開く
+          リンクを開く
         </button>
       </div>
-      <div v-else class="mt-5">
+      <div v-else class="mt-4">
         <button
-          class="btn bg-brand px-3"
+          class="btn btn-lg bg-brand px-4"
           @click="selected"
           :disabled="select < 1 && select > 4"
         >
@@ -91,9 +98,9 @@
         </button>
       </div>
     </div>
-    <div class="d-flex justify-content-end" v-else>
-      <button class="btn btn-outline-secondary px-3" @click="$router.back()">
-        もどる
+    <div class="text-center mt-4" v-else>
+      <button class="btn btn-lg bg-brand px-4" @click="$router.back()">
+        前のページへ
       </button>
     </div>
   </div>
@@ -198,6 +205,12 @@ input[type='radio'] {
   border: 4px solid #eee;
   width: 48px;
   margin-right: 2rem;
+}
+
+.error_icon {
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #eee;
 }
 
 .app_text {
