@@ -10,6 +10,8 @@ body {
 
 .page {
   width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
   height: 100vh;
   // display: flex;
   // justify-content: center;
