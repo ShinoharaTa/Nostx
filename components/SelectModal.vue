@@ -234,13 +234,4 @@ input[type='radio'] {
   background-color: #673ab7c0;
   border: 1px #673ab7 solid;
 }
-
-.bg-brand {
-  color: #fff;
-  background-color: #7c4dff;
-}
-
-a {
-  color: #ccc;
-}
 </style>
