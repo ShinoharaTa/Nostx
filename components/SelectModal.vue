@@ -109,16 +109,21 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
   props: {
-    active: false,
+    active: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      select: 1,
-      select_opt: false,
-      error: false,
+      select: 1 as number,
+      select_opt: false as boolean,
+      error: false as boolean,
     }
   },
   computed: {
@@ -188,7 +193,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style scoped>

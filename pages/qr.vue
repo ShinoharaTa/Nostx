@@ -40,10 +40,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import QRCode from 'qrcode'
 
-export default {
+export default Vue.extend({
   data() {
     return {
       url: '',
@@ -64,7 +65,7 @@ export default {
         })
     },
   },
-}
+})
 </script>
 
 <style>
