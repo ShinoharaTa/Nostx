@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+// @ts-ignore
 import QRCode from 'qrcode'
 
 export default Vue.extend({
@@ -55,12 +56,10 @@ export default Vue.extend({
     generate: function () {
       if (this.nip19 === '') return
       QRCode.toDataURL('https://nostx.shino3.net/' + this.nip19)
-        .then((url) => {
-          console.log(url)
+        .then((url: string) => {
           this.url = url
         })
-        .catch((err) => {
-          console.error(err)
+        .catch((err: string) => {
           this.url = ''
         })
     },
