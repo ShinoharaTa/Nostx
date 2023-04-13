@@ -53,7 +53,10 @@
           </div>
         </div>
       </template>
-      <div class="text-danger text-center mt-5 py-4 px-5 border border-danger item" v-else>
+      <div
+        class="text-danger text-center mt-5 py-4 px-5 border border-danger item"
+        v-else
+      >
         <div class="d-flex align-items-center justify-content-center">
           <div class="bg-white error_icon">
             <img src="/image/error_icon.jpg" alt="" class="img-fluid" />
@@ -113,8 +116,8 @@ export default {
   },
   data() {
     return {
-      select: null,
-      select_opt: true,
+      select: 1,
+      select_opt: false,
       error: false,
     }
   },
@@ -129,6 +132,11 @@ export default {
   },
   mounted() {
     this.select = this.$cookies.get('selected')
+      ? this.$cookies.get('selected')
+      : 1
+    this.select_opt = this.$cookies.get('is_all')
+      ? this.$cookies.get('is_all')
+      : false
     if (this.active) {
       let key = this.$route.params.key
       if (key.match(/(^npub.*)|(^note.*)/)) {
@@ -142,12 +150,8 @@ export default {
   },
   methods: {
     selected: function () {
-      if (this.select_opt) {
-        console.log(this.select)
-        this.$cookies.set('selected', this.select)
-      } else {
-        this.$cookies.remove('selected')
-      }
+      this.$cookies.set('selected', this.select)
+      this.$cookies.set('is_all', this.select_opt)
       if (!this.active) return
       let key = this.$route.params.key
       // memo
