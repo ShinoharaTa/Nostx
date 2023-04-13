@@ -7,10 +7,15 @@
         </div>
       </div>
       <!-- <div class="mt-4" id="generatedQR"></div> -->
-      <div class="mt-5" v-if="url">
+      <div class="mt-4 card py-3 bg-dark">
+        Nostrの npub or note入力すると<br />
+        `https://nostx.shino3.net/npub...`の <br />
+        形式のQRコードを生成します
+      </div>
+      <div class="mt-4" v-if="url">
         <img :src="url" class="img-fluid w-75" />
       </div>
-      <div class="mt-5" v-else>
+      <div class="mt-4" v-else>
         <img src="/image/notimage.png" class="img-fluid w-75" />
       </div>
       <div class="text-center mt-5">
@@ -41,7 +46,7 @@ import QRCode from 'qrcode'
 export default {
   data() {
     return {
-      url: false,
+      url: '',
       nip19: '',
     }
   },
@@ -55,8 +60,18 @@ export default {
         })
         .catch((err) => {
           console.error(err)
+          this.url = ''
         })
     },
   },
 }
 </script>
+
+<style>
+.card {
+  /* color: #444;
+  background: #f2f2f2; */
+  font-size: 0.8rem;
+  font-family: initial;
+}
+</style>
