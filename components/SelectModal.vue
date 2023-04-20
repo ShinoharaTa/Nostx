@@ -74,6 +74,7 @@
 
 <script lang="ts">
 import ClientItem from '@/components/ClientItem.vue'
+import { nip05 } from 'nostr-tools'
 import Vue from 'vue'
 
 interface Clients {
@@ -167,6 +168,8 @@ export default Vue.extend({
         }
       } else if (key.match(/^user$/)) {
         if (query.hasOwnProperty('u')) {
+          const pubkey = nip05.queryProfile(query.u as string);
+          console.log(pubkey);
           if (this.select_opt) {
             this.selected()
           }
