@@ -145,7 +145,7 @@ export default Vue.extend({
     if (this.active) {
       let key = this.$route.params.key
       if (key.match(/(^npub.*)|(^note.*)/)) {
-        if (this.select) {
+        if (this.select_opt) {
           this.selected()
         }
       } else {
