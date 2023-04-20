@@ -7,50 +7,13 @@
       <template v-if="!error">
         <div class="mt-5 text-center">クライアントを選択</div>
         <div
+          v-for="(client, key, index) in clients"
+          :key="index"
           class="item mt-3"
-          :class="{ selected: select === 1 }"
-          @click="select = 1"
+          :class="{ selected: select === key }"
+          @click="select = key"
         >
-          <div class="d-flex align-items-center">
-            <div class="bg-white app_icon">
-              <img
-                src="https://media.discordapp.net/attachments/536423734144401422/1080365850810396693/3f213087732422818ea1f7bfc2345c5a.png"
-                alt=""
-                class="img-fluid"
-              />
-            </div>
-            <div class="app_text">Iris.to</div>
-          </div>
-        </div>
-
-        <div
-          class="item mt-3"
-          :class="{ selected: select === 2 }"
-          @click="select = 2"
-        >
-          <div class="d-flex align-items-center">
-            <div class="bg-white app_icon">
-              <img
-                src="https://media.discordapp.net/attachments/536423734144401422/1080365959707099136/nostrich_512.png"
-                alt=""
-                class="img-fluid"
-              />
-            </div>
-            <div class="app_text">Snort.social</div>
-          </div>
-        </div>
-        <div
-          v-if="isSmartPhone"
-          class="item mt-3"
-          :class="{ selected: select === 3 }"
-          @click="select = 3"
-        >
-          <div class="d-flex align-items-center">
-            <div class="bg-white app_icon add-padding">
-              <img src="/image/app_icon.svg" alt="" class="img-fluid" />
-            </div>
-            <div class="app_text">アプリで開く</div>
-          </div>
+          <client-item :imgsrc="client.imgsrc" :name="client.name" />
         </div>
       </template>
       <div
@@ -86,7 +49,7 @@
         <button
           class="btn btn-lg bg-brand px-4"
           @click="selected"
-          :disabled="select < 1 && select > 4"
+          :disabled="select === ''"
         >
           リンクを開く
         </button>
@@ -95,7 +58,7 @@
         <button
           class="btn btn-lg bg-brand px-4"
           @click="selected"
-          :disabled="select < 1 && select > 4"
+          :disabled="select === ''"
         >
           設定を変更
         </button>
@@ -110,9 +73,21 @@
 </template>
 
 <script lang="ts">
+import ClientItem from '@/components/ClientItem.vue'
 import Vue from 'vue'
 
+interface Clients {
+  [key: string]: Client
+}
+
+interface Client {
+  [key: string]: any
+}
+
 export default Vue.extend({
+  components: {
+    ClientItem,
+  },
   props: {
     active: {
       type: Boolean,
@@ -121,9 +96,46 @@ export default Vue.extend({
   },
   data() {
     return {
-      select: 1 as number,
+      select: '' as string,
       select_opt: false as boolean,
       error: false as boolean,
+      clients: {
+        iris: {
+          name: 'Iris.to',
+          imgsrc:
+            'https://media.discordapp.net/attachments/536423734144401422/1080365850810396693/3f213087732422818ea1f7bfc2345c5a.png',
+          url_user: 'https://iris.to/',
+          url_note: 'https://iris.to/post/',
+          nip05: true,
+          smartphone: false,
+        },
+        snort: {
+          name: 'Snort.social',
+          imgsrc:
+            'https://media.discordapp.net/attachments/536423734144401422/1080365959707099136/nostrich_512.png',
+          url_user: 'https://snort.social/p/',
+          url_note: 'https://snort.social/e/',
+          nip05: false,
+          smartphone: false,
+        },
+        nostter: {
+          name: 'nostter',
+          imgsrc:
+            'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f43e.svg',
+          url_user: 'https://nostter.vercel.app/',
+          url_note: 'https://nostter.vercel.app/',
+          nip05: false,
+          smartphone: false,
+        },
+        apps: {
+          name: 'アプリで開く',
+          imgsrc: '/image/app_icon.svg',
+          url_user: 'nostr:',
+          url_note: 'nostr:',
+          nip05: false,
+          smartphone: false,
+        },
+      } as Clients,
     }
   },
   computed: {
@@ -138,15 +150,28 @@ export default Vue.extend({
   mounted() {
     this.select = this.$cookies.get('selected')
       ? this.$cookies.get('selected')
-      : 1
+      : 'iris'
+    if (!this.clients.hasOwnProperty(this.select)) {
+      this.select = 'iris'
+      return
+    }
     this.select_opt = this.$cookies.get('is_all')
       ? this.$cookies.get('is_all')
       : false
     if (this.active) {
       let key = this.$route.params.key
+      let query = this.$route.query
       if (key.match(/(^npub.*)|(^note.*)/)) {
         if (this.select_opt) {
           this.selected()
+        }
+      } else if (key.match(/^user$/)) {
+        if (query.hasOwnProperty('u')) {
+          if (this.select_opt) {
+            this.selected()
+          }
+        } else {
+          this.error = true
         }
       } else {
         this.error = true
@@ -162,33 +187,14 @@ export default Vue.extend({
       // memo
       // NIP-21 URL Scheme : nostr://[NIP-19]
       if (key) {
+        if (key.match(/^user$/)) {
+          console.log(key)
+        }
         if (key.match(/^npub.*/)) {
-          if (this.select === 1) {
-            window.location.href = 'https://iris.to/' + key
-          }
-          if (this.select === 2) {
-            window.location.href = 'https://snort.social/p/' + key
-          }
-          if (this.select === 3) {
-            window.location.href = 'nostr:' + key
-          }
-          // if (select === 3) {
-          // window.location.href("nostr://" + key);
-          // }
+          window.location.href = this.clients[this.select].url_user + key
         }
         if (key.match(/^note.*/)) {
-          if (this.select === 1) {
-            window.location.href = 'https://iris.to/post/' + key
-          }
-          if (this.select === 2) {
-            window.location.href = 'https://snort.social/e/' + key
-          }
-          if (this.select === 3) {
-            window.location.href = 'nostr:' + key
-          }
-          // if (select === 3) {
-          // window.location.href("nostr://" + key);
-          // }
+          window.location.href = this.clients[this.select].url_note + key
         }
       }
     },
@@ -204,26 +210,14 @@ input[type='radio'] {
 .item {
   background: #222;
   border-radius: 12px;
-  padding: 1rem 2.5rem;
+  padding: 0.6rem 2.5rem;
   border: 1px #444 solid;
-}
-
-.app_icon {
-  border-radius: 50%;
-  overflow: hidden;
-  border: 4px solid #eee;
-  width: 48px;
-  margin-right: 2rem;
 }
 
 .error_icon {
   border-radius: 50%;
   overflow: hidden;
   border: 4px solid #eee;
-}
-
-.app_text {
-  font-size: 20px;
 }
 
 .add-padding {
