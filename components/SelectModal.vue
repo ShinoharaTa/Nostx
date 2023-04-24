@@ -74,7 +74,7 @@
 
 <script lang="ts">
 import ClientItem from '@/components/ClientItem.vue'
-import { nip05 } from 'nostr-tools'
+// import { nip05 } from 'nostr-tools'
 import Vue from 'vue'
 
 interface Clients {
@@ -168,8 +168,9 @@ export default Vue.extend({
         }
       } else if (key.match(/^user$/)) {
         if (query.hasOwnProperty('u')) {
-          const pubkey = nip05.queryProfile(query.u as string);
-          console.log(pubkey);
+          // const pubkey = nip05.queryProfile(query.u as string)
+          // console.log(pubkey)
+          this.hex2str("")
           if (this.select_opt) {
             this.selected()
           }
@@ -200,6 +201,27 @@ export default Vue.extend({
           window.location.href = this.clients[this.select].url_note + key
         }
       }
+    },
+    hex2str(str: string) {
+      str = "fe9edd5d5c635dd2900f1f86a872e81ce1d6e20bd4e06549f133ae6bf158913b"
+      //Funciones Bech32
+      // function toHexString(buffer) {
+      //   return buffer.reduce((s, byte) => {
+      //     let hex = byte.toString(16)
+      //     if (hex.length === 1) hex = '0' + hex
+      //     return s + hex
+      //   }, '')
+      // }
+
+      if (str.length % 2 !== 0 || !/^[0-9a-f]+$/i.test(str)) {
+        return null
+      }
+      let buffer = new Uint8Array(str.length / 2)
+      for (let i = 0; i < buffer.length; i++) {
+        buffer[i] = parseInt(str.substr(2 * i, 2), 16)
+      }
+      console.log(str)
+      return buffer
     },
   },
 })
