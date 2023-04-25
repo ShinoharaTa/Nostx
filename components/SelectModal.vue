@@ -74,8 +74,10 @@
 
 <script lang="ts">
 import ClientItem from '@/components/ClientItem.vue'
-// import { nip05 } from 'nostr-tools'
+import { $axios } from '~/utils/api'
+import { bech32 } from 'bech32'
 import Vue from 'vue'
+import { Exception } from 'sass'
 
 interface Clients {
   [key: string]: Client
@@ -100,6 +102,7 @@ export default Vue.extend({
       select: '' as string,
       select_opt: false as boolean,
       error: false as boolean,
+      nip05tonpub: '' as string,
       clients: {
         iris: {
           name: 'Iris.to',
@@ -148,7 +151,7 @@ export default Vue.extend({
       )
     },
   },
-  mounted() {
+  async mounted() {
     this.select = this.$cookies.get('selected')
       ? this.$cookies.get('selected')
       : 'iris'
@@ -168,9 +171,39 @@ export default Vue.extend({
         }
       } else if (key.match(/^user$/)) {
         if (query.hasOwnProperty('u')) {
-          // const pubkey = nip05.queryProfile(query.u as string)
-          // console.log(pubkey)
-          this.hex2str("")
+          const atIndex = query.u.indexOf('@')
+          let user
+          let domain
+          if (atIndex !== -1) {
+            user = (query.u as string).substring(0, atIndex)
+            domain = (query.u as string).substring(atIndex + 1)
+          } else {
+            user = '_'
+            domain = query.u
+          }
+          // console.log('** user', user)
+          // console.log('** domain', domain)
+          try {
+            const { data } = await $axios.get(
+              'https://' + domain + '/.well-known/nostr.json'
+            )
+            if (data.hasOwnProperty('names')) {
+              if (data.names.hasOwnProperty(user)) {
+                const buff = Buffer.from(data.names[user], 'hex')
+                const words = bech32.toWords(buff)
+                const res = bech32.encode('npub', words)
+                this.nip05tonpub = res
+                // console.log(res)
+              } else {
+                this.error = true
+              }
+            } else {
+              this.error = true
+            }
+          } catch (error) {
+            console.log(error)
+            this.error = true
+          }
           if (this.select_opt) {
             this.selected()
           }
@@ -192,7 +225,8 @@ export default Vue.extend({
       // NIP-21 URL Scheme : nostr://[NIP-19]
       if (key) {
         if (key.match(/^user$/)) {
-          console.log(key)
+          window.location.href =
+            this.clients[this.select].url_user + this.nip05tonpub
         }
         if (key.match(/^npub.*/)) {
           window.location.href = this.clients[this.select].url_user + key
@@ -201,27 +235,6 @@ export default Vue.extend({
           window.location.href = this.clients[this.select].url_note + key
         }
       }
-    },
-    hex2str(str: string) {
-      str = "fe9edd5d5c635dd2900f1f86a872e81ce1d6e20bd4e06549f133ae6bf158913b"
-      //Funciones Bech32
-      // function toHexString(buffer) {
-      //   return buffer.reduce((s, byte) => {
-      //     let hex = byte.toString(16)
-      //     if (hex.length === 1) hex = '0' + hex
-      //     return s + hex
-      //   }, '')
-      // }
-
-      if (str.length % 2 !== 0 || !/^[0-9a-f]+$/i.test(str)) {
-        return null
-      }
-      let buffer = new Uint8Array(str.length / 2)
-      for (let i = 0; i < buffer.length; i++) {
-        buffer[i] = parseInt(str.substr(2 * i, 2), 16)
-      }
-      console.log(str)
-      return buffer
     },
   },
 })
