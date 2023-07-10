@@ -1,16 +1,16 @@
 version: '3'
 
 services:
-  nuxt:
-    build: ./docker/nuxt
-    container_name: nostx-nuxt
+  node:
+    build: ./docker/node
+    container_name: node
     ports:
-      - 3000:3000
+      - 5173:5173
     volumes:
-      - ./:/var/www
+      - ./:/var/www/
     tty: true
-    environment:
-      PORT: 3000
-      HOST: 0.0.0.0
+    # environment:
+    #   PORT: 3000
+    #   HOST: 0.0.0.0
     command: /bin/bash
     # command: sh -c "yarn install && yarn dev"

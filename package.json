@@ -1,35 +1,37 @@
 {
   "name": "nostx",
-  "version": "1.0.0",
+  "version": "0.2.1",
+  "type": "module",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--openssl-legacy-provider' nuxt",
-    "build": "NODE_OPTIONS='--openssl-legacy-provider' nuxt build",
-    "start": "NODE_OPTIONS='--openssl-legacy-provider' nuxt start",
-    "generate": "NODE_OPTIONS='--openssl-legacy-provider' nuxt generate",
-    "lint:prettier": "prettier --check .",
-    "lint": "yarn lint:prettier",
-    "lintfix": "prettier --write --list-different ."
-  },
-  "dependencies": {
-    "@nuxtjs/axios": "^5.13.6",
-    "bech32": "^2.0.0",
-    "cookie-universal-nuxt": "^2.2.2",
-    "core-js": "^3.25.3",
-    "nostr-tools": "^1.8.4",
-    "nuxt": "^2.15.8",
-    "qrcode": "^1.5.1",
-    "sass": "^1.57.1",
-    "sass-loader": "10",
-    "vue": "^2.7.10",
-    "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10"
+    "dev": "vite dev --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "@nuxt/types": "^2.16.3",
-    "@nuxt/typescript-build": "^3.0.1",
-    "eslint-config-prettier": "^8.5.0",
-    "prettier": "^2.7.1",
-    "typescript": "^5.0.4"
+    "@fontsource/fira-mono": "^4.5.10",
+    "@neoconfetti/svelte": "^1.0.0",
+    "@sveltejs/adapter-auto": "^2.0.0",
+    "@sveltejs/kit": "^1.5.0",
+    "@types/cookie": "^0.5.1",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.28.0",
+    "eslint-plugin-svelte": "^2.26.0",
+    "sass": "^1.62.1",
+    "svelte": "^3.54.0",
+    "svelte-check": "^3.0.1",
+    "svelte-preprocess": "^5.0.3",
+    "tslib": "^2.4.1",
+    "typescript": "^5.0.0",
+    "vite": "^4.3.0"
+  },
+  "dependencies": {
+    "nostr-tools": "^1.12.1",
+    "qrcode": "^1.5.3"
   }
 }
