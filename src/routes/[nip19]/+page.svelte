@@ -126,6 +126,6 @@
     </div>
   </div>
   <div class="text-center mt-4">
-    <a href="javascript:void(0)" on:click={goBack}>前の画面に戻る</a>
+    <button on:click={goBack}>前の画面に戻る</button>
   </div>
 </div>
