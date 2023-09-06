@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import ClientSelect from "../../components/ClientSelect.svelte";
+  import ClientSelect from "../../components/ClientSelectHorizontal.svelte";
   import {
     checkNip19,
     checkNip05,
@@ -11,6 +11,9 @@
   import { clients } from "$lib/const";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import PostContent from "../../components/Content.svelte";
+  import Profile from "../../components/Profile.svelte";
+  import { nip19 } from "nostr-tools";
 
   let error = false;
   let process = false;
@@ -41,7 +44,7 @@
     }
     error = true;
     return null;
-  }
+  };
 
   onMount(async () => {
     result = await checkUrl();
@@ -76,9 +79,21 @@
         </a>
       </div>
       {#if !error}
+        <div class="mt-4">
+          {#if result}
+            {#if result.type === "user"}
+              <!-- content here -->
+            {:else if result.type === "npub"}
+              <!-- else if content here -->
+              <Profile id={nip19.decode(result.id).data.toString()} />
+            {:else if result.type === "note"}
+              <PostContent id={nip19.decode(result.id).data.toString()} />
+            {/if}
+          {/if}
+        </div>
         <div class="mt-3 text-center">クライアントを選択</div>
         <ClientSelect bind:select={config.client} />
-        <div class="text-center mt-4">
+        <div class="text-center">
           <div class="mt-3 text-white">
             <input
               type="checkbox"
@@ -88,7 +103,7 @@
             />
             <label for="select_0" class="">常にこのアプリを使用する</label>
           </div>
-          <div class="mt-4">
+          <div class="mt-3">
             <button
               class="btn btn-lg bg-brand w-75"
               disabled={process}
@@ -124,8 +139,5 @@
         </div>
       {/if}
     </div>
-  </div>
-  <div class="text-center mt-4">
-    <button on:click={goBack}>前の画面に戻る</button>
   </div>
 </div>
