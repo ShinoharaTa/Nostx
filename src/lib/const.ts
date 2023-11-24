@@ -34,8 +34,8 @@ export const clients: Client[] = [
     name: 'nostter',
     imgsrc:
       'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f43e.svg',
-    url_user: 'https://nostter.vercel.app/',
-    url_note: 'https://nostter.vercel.app/',
+    url_user: 'https://nostter.app/',
+    url_note: 'https://nostter.app/',
     nip05: false,
     smartphone: false,
   },
