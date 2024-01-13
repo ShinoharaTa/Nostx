@@ -15,7 +15,7 @@ export const clients: Client[] = [
     imgsrc:
       'https://media.discordapp.net/attachments/536423734144401422/1080365850810396693/3f213087732422818ea1f7bfc2345c5a.png',
     url_user: 'https://iris.to/',
-    url_note: 'https://iris.to/post/',
+    url_note: 'https://iris.to/',
     nip05: true,
     smartphone: false,
   },
@@ -24,8 +24,8 @@ export const clients: Client[] = [
     name: 'Snort.social',
     imgsrc:
       'https://media.discordapp.net/attachments/536423734144401422/1080365959707099136/nostrich_512.png',
-    url_user: 'https://snort.social/p/',
-    url_note: 'https://snort.social/e/',
+    url_user: 'https://snort.social/',
+    url_note: 'https://snort.social/',
     nip05: false,
     smartphone: false,
   },
