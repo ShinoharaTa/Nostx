@@ -3,14 +3,14 @@
   import ClientSelect from "../components/ClientSelect.svelte";
   import { getLocalStorage, updateLocalStorage } from "$lib/app";
   import type { Config } from "$lib/app";
+  import { _ } from "svelte-i18n";
 
-  let error = false;
   const config: Config = getLocalStorage();
   onMount(async () => {
-    console.log(config)
+    console.log(config);
   });
   function saveSetting() {
-    updateLocalStorage(config)
+    updateLocalStorage(config);
   }
 </script>
 
@@ -20,24 +20,10 @@
       <div class="text-center">
         <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="" />
       </div>
-      {#if !error}
-        <div class="mt-5 text-center">クライアントを選択</div>
-        <ClientSelect bind:select={config.client} />
-      {:else}
-        <div
-          class="text-danger text-center mt-5 py-4 px-5 border border-danger item"
-        >
-          <div class="d-flex align-items-center justify-content-center">
-            <div class="bg-white error_icon">
-              <img src="/image/error_icon.jpg" alt="" class="img-fluid" />
-            </div>
-          </div>
-          <div class="mt-4">
-            URLにエラーがあります<br />
-            確認が必要です
-          </div>
-        </div>
-      {/if}
+      <div class="mt-5 text-center">
+        {$_("app.clinet_select", { default: "アプリを選ぶ" })}
+      </div>
+      <ClientSelect bind:select={config.client} />
     </div>
 
     <div class="text-center mt-4">
@@ -48,11 +34,13 @@
           name="select_0"
           bind:checked={config.auto}
         />
-        <label for="select_0" class="">常にこのアプリを使用する</label>
+        <label for="select_0" class="">
+          {$_("app.default_select", { default: "常にこのアプリを使用する" })}
+        </label>
       </div>
       <div class="mt-4">
         <button class="btn btn-lg bg-brand px-4" on:click={saveSetting}>
-          設定を保存
+          {$_("app.save", { default: "設定を保存する" })}
         </button>
       </div>
     </div>

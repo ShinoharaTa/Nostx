@@ -14,6 +14,7 @@
   import PostContent from "../../components/Content.svelte";
   import Profile from "../../components/Profile.svelte";
   import { nip19 } from "nostr-tools";
+  import { _ } from "svelte-i18n";
 
   let error = false;
   let process = false;
@@ -40,7 +41,7 @@
     user = user ?? key;
     const userHex = await checkNip05(user);
     if (userHex) {
-      return userHex
+      return userHex;
     }
     error = true;
     return null;
@@ -134,8 +135,7 @@
             </div>
           </div>
           <div class="mt-4">
-            URLにエラーがあります<br />
-            確認が必要です
+            {$_("single.error")}
           </div>
         </div>
       {/if}
