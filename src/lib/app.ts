@@ -42,8 +42,8 @@ export const checkNip05 = async (userKey: string): Promise<CheckKey | null> => {
     const profile = await nip05.queryProfile(userKey);
     if (!profile) throw "error";
     return {
-      id: userKey,
-      type: "user",
+      id: nip19.npubEncode(profile.pubkey),
+      type: "npub",
     };
   } catch {
     console.info("NIP-05 Parse error.");

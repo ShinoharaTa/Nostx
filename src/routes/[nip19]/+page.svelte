@@ -32,15 +32,15 @@
   };
 
   const checkUrl = async () => {
-    const nip19 = checkNip19(key);
-    if (nip19) {
-      return nip19;
+    const npub = checkNip19(key);
+    if (npub) {
+      return npub;
     }
     let user: string | null = $page.url.searchParams.get("u");
     user = user ?? key;
-    const nip05 = await checkNip05(user);
-    if (nip05) {
-      return nip05;
+    const userHex = await checkNip05(user);
+    if (userHex) {
+      return userHex
     }
     error = true;
     return null;
