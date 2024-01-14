@@ -93,7 +93,7 @@
             {/if}
           {/if}
         </div>
-        <div class="mt-3 text-center">クライアントを選択</div>
+        <div class="mt-3 text-center">{$_("app.client_select")}</div>
         <ClientSelect bind:select={config.client} />
         <div class="text-center">
           <div class="mt-3 text-white">
@@ -103,7 +103,7 @@
               name="select_0"
               bind:checked={config.auto}
             />
-            <label for="select_0" class="">常にこのアプリを使用する</label>
+            <label for="select_0" class="">{$_("app.defaultselect")}</label>
           </div>
           <div class="mt-3">
             <button
@@ -112,7 +112,7 @@
               on:click={selected}
             >
               {#if !process}
-                Nostr で開く
+                {$_("app.open_nostr")}
               {:else}
                 <div class="d-flex justify-content-center align-items-center">
                   <div
