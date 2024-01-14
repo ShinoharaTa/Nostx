@@ -30,13 +30,13 @@
       形式のQRコードを生成します
     </div>
     {#if url}
-    <div class="mt-4">
-      <img src={url} class="img-fluid w-75" alt="" />
-    </div>
+      <div class="mt-4">
+        <img src={url} class="img-fluid w-75" alt="" />
+      </div>
     {:else}
-    <div class="mt-4">
-      <img src="/image/notimage.png" class="img-fluid w-75" alt="" />
-    </div>
+      <div class="mt-4">
+        <img src="/image/notimage.png" class="img-fluid w-75" alt="" />
+      </div>
     {/if}
     <div class="text-center mt-5">
       <textarea
@@ -52,9 +52,7 @@
       </div>
     </div>
     <div class="mt-4">
-      <a href="javascript:void(0)" class="" on:click={() => window.history.back()}>
-        «　前のページへ
-      </a>
+      <a href="/" class=""> «　ホームへ戻る </a>
     </div>
   </div>
 </div>

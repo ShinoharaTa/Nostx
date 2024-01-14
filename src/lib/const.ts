@@ -1,4 +1,4 @@
-interface Client {
+export type Client = {
   key: string,
   name: string,
   imgsrc: string,
