@@ -1,7 +1,7 @@
 {
   "test": "テスト",
   "app": {
-    "clinet_select": "アプリを選択",
+    "client_select": "アプリを選択",
     "default_select": "常にこのアプリを使用する",
     "save": "設定を保存",
     "open_nostr": "Nostr で開く"

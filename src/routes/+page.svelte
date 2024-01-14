@@ -21,7 +21,7 @@
         <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="" />
       </div>
       <div class="mt-5 text-center">
-        {$_("app.clinet_select", { default: "アプリを選ぶ" })}
+        {$_("app.client_select", { default: "アプリを選ぶ" })}
       </div>
       <ClientSelect bind:select={config.client} />
     </div>

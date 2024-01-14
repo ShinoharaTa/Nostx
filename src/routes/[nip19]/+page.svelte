@@ -1,19 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import ClientSelect from "../../components/ClientSelectHorizontal.svelte";
-  import {
-    checkNip19,
-    checkNip05,
-    getLocalStorage,
-    updateLocalStorage,
-  } from "$lib/app";
-  import type { Config, CheckKey } from "$lib/app";
+  import { getLocalStorage, updateLocalStorage } from "$lib/app";
+  import type { Config } from "$lib/app";
   import { clients } from "$lib/const";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import { parseQuery } from "$lib/nostr";
+  import type { ParsedNIP19 } from "$lib/nostr";
   import PostContent from "../../components/Content.svelte";
   import Profile from "../../components/Profile.svelte";
-  import { nip19 } from "nostr-tools";
   import { _ } from "svelte-i18n";
 
   let error = false;
@@ -27,28 +23,14 @@
     window.history.back();
   }
 
-  let result: CheckKey | null = {
-    id: "",
-    type: "",
-  };
-
-  const checkUrl = async () => {
-    const npub = checkNip19(key);
-    if (npub) {
-      return npub;
-    }
-    let user: string | null = $page.url.searchParams.get("u");
-    user = user ?? key;
-    const userHex = await checkNip05(user);
-    if (userHex) {
-      return userHex;
-    }
-    error = true;
-    return null;
-  };
+  let result: ParsedNIP19 | null = null;
 
   onMount(async () => {
-    result = await checkUrl();
+    result = await parseQuery(key);
+    if(!result) {
+      error = true;
+      return;
+    }
     if (config.auto) {
       selected();
     }
@@ -60,13 +42,13 @@
     if (!client) return;
     if (!result) return;
     if (result.type === "user") {
-      await goto(client.url_user + result.id);
+      await goto(client.url_user + result.key);
     }
     if (result.type === "npub") {
-      await goto(client.url_user + key);
+      await goto(client.url_user + result.key);
     }
     if (result.type === "note") {
-      await goto(client.url_note + key);
+      await goto(client.url_note + result.key);
     }
   };
 </script>
@@ -84,12 +66,12 @@
           {#if result}
             {#if result.type === "user"}
               <!-- content here -->
-              <Profile id={nip19.decode(result.id).data.toString()} />
+              <Profile id={result.hex} />
             {:else if result.type === "npub"}
               <!-- else if content here -->
-              <Profile id={nip19.decode(result.id).data.toString()} />
+              <Profile id={result.hex} />
             {:else if result.type === "note"}
-              <PostContent id={nip19.decode(result.id).data.toString()} />
+              <PostContent id={result.hex} />
             {/if}
           {/if}
         </div>
@@ -103,7 +85,7 @@
               name="select_0"
               bind:checked={config.auto}
             />
-            <label for="select_0" class="">{$_("app.defaultselect")}</label>
+            <label for="select_0" class="">{$_("app.default_select")}</label>
           </div>
           <div class="mt-3">
             <button

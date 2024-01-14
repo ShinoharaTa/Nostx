@@ -1,7 +1,7 @@
 {
   "test": "test",
   "app": {
-    "clinet_select": "Select apps",
+    "client_select": "Select apps",
     "default_select": "Set to default",
     "save": "Save",
     "open_nostr": "Open Nostr app"
