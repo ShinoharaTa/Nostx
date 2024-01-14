@@ -6,7 +6,7 @@
   let url = "";
   const generate = () => {
     if (nip19 === "") return;
-    QRCode.toDataURL("https://nostx.shino3.net/" + nip19)
+    QRCode.toDataURL("https://nostx.io/" + nip19)
       .then((result: string) => {
         url = result;
       })
@@ -26,7 +26,7 @@
     <!-- <div class="mt-4" id="generatedQR"></div> -->
     <div class="mt-4 card py-3 bg-dark">
       Nostrの npub or note入力すると<br />
-      `https://nostx.shino3.net/npub...`の <br />
+      `https://nostx.io/npub...`の <br />
       形式のQRコードを生成します
     </div>
     {#if url}
