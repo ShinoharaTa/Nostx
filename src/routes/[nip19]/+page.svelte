@@ -83,6 +83,7 @@
           {#if result}
             {#if result.type === "user"}
               <!-- content here -->
+              <Profile id={nip19.decode(result.id).data.toString()} />
             {:else if result.type === "npub"}
               <!-- else if content here -->
               <Profile id={nip19.decode(result.id).data.toString()} />

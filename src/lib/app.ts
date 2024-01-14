@@ -26,7 +26,7 @@ export interface CheckKey {
 
 export const checkNip19 = (nip19_key: string): CheckKey | null => {
   try {
-    let object = nip19.decode(nip19_key);
+    const object = nip19.decode(nip19_key);
     return {
       id: nip19_key,
       type: object.type,
@@ -43,7 +43,7 @@ export const checkNip05 = async (userKey: string): Promise<CheckKey | null> => {
     if (!profile) throw "error";
     return {
       id: nip19.npubEncode(profile.pubkey),
-      type: "npub",
+      type: "user",
     };
   } catch {
     console.info("NIP-05 Parse error.");
