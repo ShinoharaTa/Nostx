@@ -8,5 +8,8 @@
   },
   "single": {
     "error": "ERROR: please check URL"
+  },
+  "qr": {
+    "make": "Make to QR Code"
   }
 }
