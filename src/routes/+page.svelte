@@ -17,6 +17,6 @@
     </div>
   </div>
   <div class="text-center mt-4">
-    <a href="/qr">QRコードを作る</a>
+    <a href="/qr">{$_("qr.make", { default: "QRコードを作る" })}</a>
   </div>
 </div>
