@@ -1,5 +1,5 @@
 import { nip19, nip05 } from "nostr-tools";
-import { eventKind, NostrFetcher } from "nostr-fetch";
+import { NostrFetcher } from "nostr-fetch";
 import type { NostrEvent, FetchFilter } from "nostr-fetch";
 import "websocket-polyfill";
 
