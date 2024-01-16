@@ -1,10 +1,13 @@
 import { nip19, nip05 } from "nostr-tools";
+import { eventKind, NostrFetcher } from "nostr-fetch";
+import type { NostrEvent, FetchFilter } from "nostr-fetch";
+import "websocket-polyfill";
 
 export type ParsedNIP19 = {
   key: string;
   hex: string;
   type: string;
-}
+};
 
 export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
   try {
@@ -29,4 +32,27 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
     console.info("NIP-05 Parse error.");
   }
   return null;
+};
+
+const fetcher = NostrFetcher.init();
+const relays = ["wss://relay.damus.io", "wss://relay.snort.social"];
+
+export const getSingleItem = async (params: {
+  kind: number;
+  note?: string;
+  author?: string;
+}) => {
+  const filters: FetchFilter = { kinds: [params.kind] };
+  if (params.note) {
+    filters.authors = [params.note];
+  }
+  if (params.author) {
+    filters.authors = [params.author];
+  }
+  const lastData: NostrEvent | undefined = await fetcher.fetchLastEvent(
+    relays,
+    filters
+  );
+  console.log(lastData);
+  return lastData;
 };
