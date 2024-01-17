@@ -35,7 +35,7 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
 };
 
 const fetcher = NostrFetcher.init();
-const relays = ["wss://relay.damus.io", "wss://relay.snort.social"];
+const relays = ["wss://relay.damus.io", "wss://relay.snort.social", "wss://r.kojira.io"];
 
 export const getSingleItem = async (params: {
   kind: number;
@@ -44,7 +44,7 @@ export const getSingleItem = async (params: {
 }) => {
   const filters: FetchFilter = { kinds: [params.kind] };
   if (params.note) {
-    filters.authors = [params.note];
+    filters.ids = [params.note];
   }
   if (params.author) {
     filters.authors = [params.author];
@@ -53,6 +53,5 @@ export const getSingleItem = async (params: {
     relays,
     filters
   );
-  console.log(lastData);
   return lastData;
 };
