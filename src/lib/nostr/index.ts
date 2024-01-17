@@ -1,6 +1,8 @@
 import { nip19, nip05 } from "nostr-tools";
 import { NostrFetcher } from "nostr-fetch";
 import type { NostrEvent, FetchFilter } from "nostr-fetch";
+import { simplePoolAdapter } from "@nostr-fetch/adapter-nostr-tools";
+import { SimplePool } from "nostr-tools";
 import "websocket-polyfill";
 
 export type ParsedNIP19 = {
@@ -34,7 +36,10 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
   return null;
 };
 
-const fetcher = NostrFetcher.init();
+const pool = new SimplePool();
+
+// const fetcher = NostrFetcher.init();
+const fetcher = NostrFetcher.withCustomPool(simplePoolAdapter(pool));
 const relays = [
   "wss://nos.lol",
   "wss://relay.damus.io",
