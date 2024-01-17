@@ -35,7 +35,16 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
 };
 
 const fetcher = NostrFetcher.init();
-const relays = ["wss://relay.damus.io", "wss://relay.snort.social", "wss://r.kojira.io"];
+const relays = [
+  "wss://nos.lol",
+  "wss://relay.damus.io",
+  "wss://relay.nostr.wirednet.jp",
+  "wss://nostr-relay.nokotaro.com",
+  "wss://yabu.me",
+  "wss://relay-jp.nostr.wirednet.jp",
+  "wss://r.kojira.io",
+  "wss://relay-jp.shino3.net",
+];
 
 export const getSingleItem = async (params: {
   kind: number;
