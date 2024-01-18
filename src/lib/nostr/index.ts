@@ -6,7 +6,6 @@ import { SimplePool } from "nostr-tools";
 import "websocket-polyfill";
 
 export type ParsedNIP19 = {
-  key: string;
   hex: string;
   type: string;
 };
@@ -24,14 +23,11 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
         hexString = object.data.id;
         break;
       case "note":
-        hexString = object.data;
-        break;
       case "npub":
         hexString = object.data;
         break;
     }
     return Promise.resolve({
-      key: key,
       hex: hexString,
       type: object.type,
     });
@@ -42,7 +38,6 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
     const profile = await nip05.queryProfile(key);
     if (!profile) throw "error";
     return {
-      key: nip19.npubEncode(profile.pubkey),
       hex: profile.pubkey,
       type: "user",
     };
