@@ -14,9 +14,25 @@ export type ParsedNIP19 = {
 export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
   try {
     const object = nip19.decode(key);
+    console.log(object);
+    let hexString = "";
+    switch(object.type){
+      case "nprofile":
+        hexString = object.data.pubkey;
+        break;
+      case "nevent":
+        hexString = object.data.id;
+        break;
+      case "note":
+        hexString = object.data;
+        break;
+      case "npub":
+        hexString = object.data;
+        break;
+    }
     return Promise.resolve({
       key: key,
-      hex: object.data.toString(),
+      hex: hexString,
       type: object.type,
     });
   } catch {

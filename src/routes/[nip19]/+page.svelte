@@ -38,10 +38,10 @@
               {#if result.type === "user"}
                 <!-- content here -->
                 <Profile id={result.hex} />
-              {:else if result.type === "npub"}
+              {:else if result.type === "npub" || result.type === "nprofile"}
                 <!-- else if content here -->
                 <Profile id={result.hex} />
-              {:else if result.type === "note"}
+              {:else if result.type === "note" || result.type === "nevent"}
                 <PostContent id={result.hex} />
               {/if}
             {/if}
