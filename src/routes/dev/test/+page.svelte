@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { page } from "$app/stores";
-  import { parseQuery } from "$lib/nostr";
   import { _ } from "svelte-i18n";
 
   const items = [
