@@ -53,5 +53,6 @@
   .item {
     font-size: 14px;
     padding: 1rem;
+    white-space: pre-wrap;
   }
 </style>
