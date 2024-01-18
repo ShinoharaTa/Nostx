@@ -39,7 +39,7 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
     if (!profile) throw "error";
     return {
       hex: profile.pubkey,
-      type: "user",
+      type: "npub",
     };
   } catch {
     console.info("NIP-05 Parse error.");

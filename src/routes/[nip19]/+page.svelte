@@ -35,11 +35,7 @@
         {#if result}
           <div class="mt-4">
             {#if result}
-              {#if result.type === "user"}
-                <!-- content here -->
-                <Profile id={result.hex} />
-              {:else if result.type === "npub" || result.type === "nprofile"}
-                <!-- else if content here -->
+              {#if result.type === "npub" || result.type === "nprofile"}
                 <Profile id={result.hex} />
               {:else if result.type === "note" || result.type === "nevent"}
                 <PostContent id={result.hex} />
