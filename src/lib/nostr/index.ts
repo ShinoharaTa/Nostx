@@ -8,6 +8,7 @@ import "websocket-polyfill";
 export type ParsedNIP19 = {
   hex: string;
   type: string;
+  key: string;
 };
 
 export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
@@ -15,7 +16,7 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
     const object = nip19.decode(key);
     console.log(object);
     let hexString = "";
-    switch(object.type){
+    switch (object.type) {
       case "nprofile":
         hexString = object.data.pubkey;
         break;
@@ -30,6 +31,7 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
     return Promise.resolve({
       hex: hexString,
       type: object.type,
+      key: key,
     });
   } catch {
     console.info("NIP-19 Parse error.");
@@ -40,6 +42,7 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
     return {
       hex: profile.pubkey,
       type: "user",
+      key: key,
     };
   } catch {
     console.info("NIP-05 Parse error.");
