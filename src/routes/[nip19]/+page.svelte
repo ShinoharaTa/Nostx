@@ -1,24 +1,23 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import Application from "../../components/Application.svelte";
-  import { clients } from "$lib/const";
-  import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
-  import { parseQuery } from "$lib/nostr";
-  import type { ParsedNIP19 } from "$lib/nostr";
-  import PostContent from "../../components/Content.svelte";
-  import Profile from "../../components/Profile.svelte";
-  import { _ } from "svelte-i18n";
+import { onMount } from "svelte";
+import Application from "../../components/Application.svelte";
+import { clients } from "$lib/const";
+import { page } from "$app/state";
+import { parseQuery } from "$lib/nostr";
+import type { ParsedNIP19 } from "$lib/nostr";
+import PostContent from "../../components/Content.svelte";
+import Profile from "../../components/Profile.svelte";
+import { _ } from "svelte-i18n";
 
-  const key: string = $page.params.nip19;
+const key: string = page.params.nip19;
 
-  let result: ParsedNIP19 | null;
-  let process: boolean = true;
+let result: ParsedNIP19 | null;
+let process = true;
 
-  onMount(async () => {
-    result = await parseQuery(key);
-    process = false;
-  });
+onMount(async () => {
+	result = await parseQuery(key);
+	process = false;
+});
 </script>
 
 <div class="page">

@@ -1,19 +1,19 @@
 <script lang="ts">
-  // @ts-ignore
-  import QRCode from "qrcode";
+// @ts-ignore
+import QRCode from "qrcode";
 
-  let nip19 = "";
-  let url = "";
-  const generate = () => {
-    if (nip19 === "") return;
-    QRCode.toDataURL("https://nostx.io/" + nip19)
-      .then((result: string) => {
-        url = result;
-      })
-      .catch((err: string) => {
-        url = "";
-      });
-  };
+let nip19 = "";
+let url = "";
+const generate = () => {
+	if (nip19 === "") return;
+	QRCode.toDataURL(`https://nostx.io/${nip19}`)
+		.then((result: string) => {
+			url = result;
+		})
+		.catch((err: string) => {
+			url = "";
+		});
+};
 </script>
 
 <div class="page text-center">
@@ -44,7 +44,7 @@
         class="form-control"
         placeholder="npub... or note..."
         rows="3"
-      />
+      ></textarea>
       <div class="mt-3">
         <button class="btn btn-lg bg-brand px-4" on:click={generate}>
           QRコードを生成する
