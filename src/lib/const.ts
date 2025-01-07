@@ -2,28 +2,25 @@ export type Client = {
   key: string,
   name: string,
   imgsrc: string,
-  url_user: string,
-  url_note: string,
+  url: {
+    default: string,
+    npub?: string,
+    nprofile?: string,
+    note?: string,
+    nevent?: string,
+  }
   nip05: boolean,
   smartphone: boolean,
 }
 
 export const clients: Client[] = [
   {
-    key: "iris",
-    name: 'Iris.to',
-    imgsrc: '/image/iris.png',
-    url_user: 'https://iris.to/',
-    url_note: 'https://iris.to/',
-    nip05: true,
-    smartphone: false,
-  },
-  {
-    key: "snort",
-    name: 'Snort.social',
-    imgsrc: '/image/snort.png',
-    url_user: 'https://snort.social/',
-    url_note: 'https://snort.social/',
+    key: "apps",
+    name: 'アプリで開く',
+    imgsrc: '/image/app_icon.svg',
+    url: {
+      default: 'nostr:'
+    },
     nip05: false,
     smartphone: false,
   },
@@ -31,17 +28,42 @@ export const clients: Client[] = [
     key: "nostter",
     name: 'nostter',
     imgsrc: '/image/nostter.png',
-    url_user: 'https://nostter.app/',
-    url_note: 'https://nostter.app/',
+    url: {
+      default: 'https://nostter.app/'
+    },
     nip05: false,
     smartphone: false,
   },
   {
-    key: "apps",
-    name: 'アプリで開く',
-    imgsrc: '/image/app_icon.svg',
-    url_user: 'nostr:',
-    url_note: 'nostr:',
+    key: "primal",
+    name: 'Primal',
+    imgsrc: '/image/iris.png',
+    url: {
+      default: "",
+      npub: "",
+      note: 'https://primal.net/e/',
+      nevent: 'https://primal.net/e/',
+    },
+    nip05: true,
+    smartphone: false,
+  },
+  {
+    key: "iris",
+    name: 'Iris',
+    imgsrc: '/image/iris.png',
+    url: {
+      default: 'https://iris.to/'
+    },
+    nip05: true,
+    smartphone: false,
+  },
+  {
+    key: "snort",
+    name: 'Snort',
+    imgsrc: '/image/snort.png',
+    url: {
+      default: 'https://snort.social/'
+    },
     nip05: false,
     smartphone: false,
   },

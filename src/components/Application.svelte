@@ -1,21 +1,45 @@
 <script lang="ts">
-  import type { Client } from "$lib/const";
-  import type { ParsedNIP19 } from "$lib/nostr";
-  export let client: Client;
-  export let result: ParsedNIP19;
+import type { Client } from "$lib/const";
+import {
+	encodeBytes,
+	neventEncode,
+	noteEncode,
+	nprofileEncode,
+	npubEncode,
+	type DecodeResult,
+} from "nostr-tools/nip19";
+export let client: Client;
+export let result: DecodeResult;
 
-  const linkUrl = () => {
-    if (result.type === "user") {
-      return client.url_user + result.key;
-    }
-    if (result.type === "npub") {
-      return client.url_user + result.key;
-    }
-    if (result.type === "note") {
-      return client.url_note + result.key;
-    }
-    return "";
-  };
+const linkUrl = () => {
+	let nip19Encode = "";
+	let clientUrl = "";
+	if (result.type === "npub" || result.type === "nprofile") {
+		if (result.type === "nprofile" && client.url.nprofile) {
+			nip19Encode = nprofileEncode(result.data);
+			clientUrl = client.url.nprofile ?? client.url.default;
+		} else if (result.type === "nprofile") {
+			nip19Encode = npubEncode(result.data.pubkey);
+			clientUrl = client.url.npub ?? client.url.default;
+		} else {
+			nip19Encode = npubEncode(result.data);
+			clientUrl = client.url.npub ?? client.url.default;
+		}
+	}
+	if (result.type === "note" || result.type === "nevent") {
+		if (result.type === "nevent" && client.url.nevent) {
+			nip19Encode = neventEncode(result.data);
+			clientUrl = client.url.nevent ?? client.url.default;
+		} else if (result.type === "nevent") {
+			nip19Encode = noteEncode(result.data.id);
+			clientUrl = client.url.note ?? client.url.default;
+		} else {
+			nip19Encode = noteEncode(result.data);
+			clientUrl = client.url.note ?? client.url.default;
+		}
+	}
+	return clientUrl + nip19Encode;
+};
 </script>
 
 <div class="col-3">

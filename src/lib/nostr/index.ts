@@ -1,33 +1,12 @@
 import { SimplePool, type Filter } from "nostr-tools";
 import { queryProfile } from "nostr-tools/nip05";
-import { decode } from "nostr-tools/nip19";
+import { decode, type DecodeResult } from "nostr-tools/nip19";
 
-export type ParsedNIP19 = {
-  hex: string;
-  type: string;
-};
-
-export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
+export const parseQuery = async (key: string): Promise<DecodeResult | null> => {
   try {
-    const object = decode(key);
-    console.log(object);
-    let hexString = "";
-    switch(object.type){
-      case "nprofile":
-        hexString = object.data.pubkey;
-        break;
-      case "nevent":
-        hexString = object.data.id;
-        break;
-      case "note":
-      case "npub":
-        hexString = object.data;
-        break;
-    }
-    return Promise.resolve({
-      hex: hexString,
-      type: object.type,
-    });
+    const nip19decode = decode(key);
+    console.log(nip19decode);
+    return nip19decode;
   } catch {
     console.info("NIP-19 Parse error.");
   }
@@ -35,9 +14,9 @@ export const parseQuery = async (key: string): Promise<ParsedNIP19 | null> => {
     const profile = await queryProfile(key);
     if (!profile) throw "error";
     return {
-      hex: profile.pubkey,
       type: "npub",
-    };
+      data: profile.pubkey
+    }
   } catch {
     console.info("NIP-05 Parse error.");
   }
