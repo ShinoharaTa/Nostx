@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { getSingleItem } from "$lib/nostr";
+import { getSingleItem } from "$lib/nostr";
 
-  export let id: string = "";
-  let metadata: { [key: string]: any } | null = null;
-  const getItem = async () => {
-    const data = await getSingleItem({ kind: 0, author: id });
-    if (data) metadata = JSON.parse(data.content);
-  };
-  getItem();
+export let id: string;
+let metadata: { [key: string]: string } | null = null;
+const getItem = async () => {
+	const data = await getSingleItem({ kind: 0, author: id });
+	if (data) metadata = JSON.parse(data.content);
+};
+getItem();
 </script>
 
 {#if metadata}
