@@ -48,6 +48,16 @@ export const clients: Client[] = [
     smartphone: false,
   },
   {
+    key: "coracle",
+    name: 'Coracle',
+    imgsrc: '/image/coracle.png',
+    url: {
+      default: 'https://coracle.social/'
+    },
+    nip05: false,
+    smartphone: false,
+  },
+  {
     key: "iris",
     name: 'Iris',
     imgsrc: '/image/iris.png',

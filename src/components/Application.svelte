@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { Client } from "$lib/const";
 import {
-	encodeBytes,
 	neventEncode,
 	noteEncode,
 	nprofileEncode,
