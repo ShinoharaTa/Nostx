@@ -39,7 +39,7 @@ const linkUrl = () => {
 };
 </script>
 
-<div class="col-3">
+<div class="col-4">
   <a class="item mt-2 text-center" href="{linkUrl()}">
     <div class="d-flex justify-content-center">
       <div class="bg-white app_icon">
