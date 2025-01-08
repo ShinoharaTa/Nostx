@@ -11,3 +11,11 @@
     <div class="mt-2">©2025 T.Shinohara</div>
   </div>
 </footer>
+
+<style>
+  footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+</style>
