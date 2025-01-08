@@ -13,29 +13,27 @@ export let result: DecodeResult;
 const linkUrl = () => {
 	let nip19Encode = "";
 	let clientUrl = "";
-	if (result.type === "npub" || result.type === "nprofile") {
-		if (result.type === "nprofile" && client.url.nprofile) {
-			nip19Encode = nprofileEncode(result.data);
-			clientUrl = client.url.nprofile ?? client.url.default;
-		} else if (result.type === "nprofile") {
-			nip19Encode = npubEncode(result.data.pubkey);
-			clientUrl = client.url.npub ?? client.url.default;
-		} else {
-			nip19Encode = npubEncode(result.data);
-			clientUrl = client.url.npub ?? client.url.default;
-		}
+	if (result.type === "npub") {
+		nip19Encode = npubEncode(result.data);
+		clientUrl = client.url.npub;
 	}
-	if (result.type === "note" || result.type === "nevent") {
-		if (result.type === "nevent" && client.url.nevent) {
-			nip19Encode = neventEncode(result.data);
-			clientUrl = client.url.nevent ?? client.url.default;
-		} else if (result.type === "nevent") {
-			nip19Encode = noteEncode(result.data.id);
-			clientUrl = client.url.note ?? client.url.default;
-		} else {
-			nip19Encode = noteEncode(result.data);
-			clientUrl = client.url.note ?? client.url.default;
-		}
+	if (result.type === "nprofile" && client.url.nprofile) {
+		nip19Encode = nprofileEncode(result.data);
+		clientUrl = client.url.nprofile;
+	} else if (result.type === "nprofile") {
+		nip19Encode = npubEncode(result.data.pubkey);
+		clientUrl = client.url.npub;
+	}
+	if (result.type === "note") {
+		nip19Encode = noteEncode(result.data);
+		clientUrl = client.url.note;
+	}
+	if (result.type === "nevent" && client.url.nevent) {
+		nip19Encode = neventEncode(result.data);
+		clientUrl = client.url.nevent;
+	} else if (result.type === "nevent") {
+		nip19Encode = noteEncode(result.data.id);
+		clientUrl = client.url.note;
 	}
 	return clientUrl + nip19Encode;
 };

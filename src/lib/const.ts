@@ -3,10 +3,9 @@ export type Client = {
   name: string,
   imgsrc: string,
   url: {
-    default: string,
-    npub?: string,
+    npub: string,
     nprofile?: string,
-    note?: string,
+    note: string,
     nevent?: string,
   }
   nip05: boolean,
@@ -19,7 +18,10 @@ export const clients: Client[] = [
     name: 'アプリで開く',
     imgsrc: '/image/app_icon.svg',
     url: {
-      default: 'nostr:'
+      npub: 'nostr:',
+      nprofile: 'nostr:',
+      note: 'nostr:',
+      nevent: 'nostr:',
     },
     nip05: false,
     smartphone: false,
@@ -29,7 +31,10 @@ export const clients: Client[] = [
     name: 'nostter',
     imgsrc: '/image/nostter.png',
     url: {
-      default: 'https://nostter.app/'
+      npub: 'https://nostter.app/',
+      nprofile: 'https://nostter.app/',
+      note: 'https://nostter.app/',
+      nevent: 'https://nostter.app/',
     },
     nip05: false,
     smartphone: false,
@@ -39,8 +44,8 @@ export const clients: Client[] = [
     name: 'Primal',
     imgsrc: '/image/primal.svg',
     url: {
-      default: "",
       npub: 'https://primal.net/p/',
+      nprofile: 'https://primal.net/p/',
       note: 'https://primal.net/e/',
       nevent: 'https://primal.net/e/',
     },
@@ -52,7 +57,10 @@ export const clients: Client[] = [
     name: 'Coracle',
     imgsrc: '/image/coracle.png',
     url: {
-      default: 'https://coracle.social/'
+      npub: 'https://coracle.social/',
+      nprofile: 'https://coracle.social/',
+      note: 'https://coracle.social/',
+      nevent: 'https://coracle.social/',
     },
     nip05: false,
     smartphone: false,
@@ -62,7 +70,10 @@ export const clients: Client[] = [
     name: 'Iris',
     imgsrc: '/image/iris.png',
     url: {
-      default: 'https://iris.to/'
+      npub: "https://iris.to/",
+      nprofile: "https://iris.to/",
+      note: "https://iris.to/",
+      nevent: "https://iris.to/",
     },
     nip05: true,
     smartphone: false,
@@ -72,7 +83,10 @@ export const clients: Client[] = [
     name: 'Snort',
     imgsrc: '/image/snort.png',
     url: {
-      default: 'https://snort.social/'
+      npub: 'https://snort.social/',
+      nprofile: 'https://snort.social/',
+      note: 'https://snort.social/',
+      nevent: 'https://snort.social/',
     },
     nip05: false,
     smartphone: false,
