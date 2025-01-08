@@ -1,11 +1,11 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import Application from "../../components/Application.svelte";
+import Application from "$lib/components/Application.svelte";
 import { clients } from "$lib/const";
 import { page } from "$app/state";
 import { parseQuery } from "$lib/nostr";
-import PostContent from "../../components/Content.svelte";
-import Profile from "../../components/Profile.svelte";
+import PostContent from "$lib/components/Content.svelte";
+import Profile from "$lib/components/Profile.svelte";
 import { _ } from "svelte-i18n";
 import type { DecodeResult } from "nostr-tools/nip19";
 
