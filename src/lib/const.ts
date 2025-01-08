@@ -37,10 +37,10 @@ export const clients: Client[] = [
   {
     key: "primal",
     name: 'Primal',
-    imgsrc: '/image/iris.png',
+    imgsrc: '/image/primal.svg',
     url: {
       default: "",
-      npub: "",
+      npub: 'https://primal.net/p/',
       note: 'https://primal.net/e/',
       nevent: 'https://primal.net/e/',
     },
