@@ -25,8 +25,8 @@ const generate = () => {
     </div>
     <!-- <div class="mt-4" id="generatedQR"></div> -->
     <div class="mt-4 card py-3 bg-dark">
-      Nostrの npub or note入力すると<br />
-      `https://nostx.io/npub...`の <br />
+      Nostrのnpub1, nprofile1, nevent1 ... 入力すると<br />
+      "https://nostx.io/npub..."の <br />
       形式のQRコードを生成します
     </div>
     {#if url}
@@ -42,7 +42,7 @@ const generate = () => {
       <textarea
         bind:value={nip19}
         class="form-control"
-        placeholder="npub... or note..."
+        placeholder="npub1, nprofile1, note1, nevent1..."
         rows="3"
       ></textarea>
       <div class="mt-3">
@@ -61,7 +61,7 @@ const generate = () => {
   .card {
     /* color: #444;
     background: #f2f2f2; */
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-family: initial;
   }
 </style>
