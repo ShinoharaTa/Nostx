@@ -5,7 +5,7 @@ body {
   color: #eeeeee;
   font-family: 'Noto Serif JP', serif;
   // font-family: 'Playfair Display', serif;
-  font-size: 20px;
+  // font-size: 20px;
 }
 
 textarea {
@@ -14,12 +14,8 @@ textarea {
 
 .page {
   width: 100%;
-  max-width: 720px;
+  max-width: 480px;
   margin: 0 auto;
-  height: 100vh;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
 }
 
 .footer {

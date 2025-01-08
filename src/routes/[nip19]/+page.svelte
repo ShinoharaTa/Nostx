@@ -1,24 +1,24 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import Application from "../../components/Application.svelte";
-  import { clients } from "$lib/const";
-  import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
-  import { parseQuery } from "$lib/nostr";
-  import type { ParsedNIP19 } from "$lib/nostr";
-  import PostContent from "../../components/Content.svelte";
-  import Profile from "../../components/Profile.svelte";
-  import { _ } from "svelte-i18n";
+import { onMount } from "svelte";
+import Application from "$lib/components/Application.svelte";
+import { clients } from "$lib/const";
+import { page } from "$app/state";
+import { parseQuery } from "$lib/nostr";
+import PostContent from "$lib/components/Content.svelte";
+import Profile from "$lib/components/Profile.svelte";
+import { _ } from "svelte-i18n";
+import type { DecodeResult } from "nostr-tools/nip19";
 
-  const key: string = $page.params.nip19;
+const key: string = page.params.nip19;
 
-  let result: ParsedNIP19 | null;
-  let process: boolean = true;
+let nip19decode: DecodeResult | null;
+let process = true;
 
-  onMount(async () => {
-    result = await parseQuery(key);
-    process = false;
-  });
+onMount(async () => {
+	nip19decode = await parseQuery(key);
+	console.log(nip19decode);
+	process = false;
+});
 </script>
 
 <div class="page">
@@ -32,24 +32,24 @@
       {#if process}
         <div class="mt-5">Loading...</div>
       {:else}
-        {#if result}
+        {#if nip19decode}
           <div class="mt-4">
-            {#if result}
-              {#if result.type === "user"}
-                <!-- content here -->
-                <Profile id={result.hex} />
-              {:else if result.type === "npub" || result.type === "nprofile"}
-                <!-- else if content here -->
-                <Profile id={result.hex} />
-              {:else if result.type === "note" || result.type === "nevent"}
-                <PostContent id={result.hex} />
+            {#if nip19decode}
+              {#if nip19decode.type === "npub"}
+                <Profile id={nip19decode.data} />
+              {:else if nip19decode.type === "nprofile"}
+                <Profile id={nip19decode.data.pubkey} />
+              {:else if nip19decode.type === "note"}
+                <PostContent id={nip19decode.data} />
+              {:else if nip19decode.type === "nevent"}
+                <PostContent id={nip19decode.data.id} />
               {/if}
             {/if}
           </div>
           <div class="mt-3 text-center">{$_("app.client_select")}</div>
           <div class="row g-2">
             {#each clients as client}
-              <Application {client} {result} />
+              <Application {client} result={nip19decode} />
             {/each}
           </div>
         {:else}

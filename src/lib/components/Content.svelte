@@ -1,32 +1,36 @@
 <script lang="ts">
-  import { getSingleItem } from "$lib/nostr";
-  import { fromUnixTime, format } from "date-fns";
-  import type { NostrEvent } from "nostr-fetch";
+import { getSingleItem } from "$lib/nostr";
+import { fromUnixTime, format } from "date-fns";
+import type { Event } from "nostr-tools";
 
-  export let id: string = "";
-  let text: NostrEvent;
-  let metadata: { [key: string]: any };
-  const getItem = async () => {
-    const getText = await getSingleItem({ kind: 1, note: id });
-    console.log(getText);
-    if (getText) {
-      text = getText;
-    } else {
-      return;
-    }
-    const getMetadata = await getSingleItem({
-      kind: 0,
-      author: getText.pubkey,
-    });
-    if (getMetadata) metadata = JSON.parse(getMetadata.content);
-  };
-  getItem();
+export let id: string;
+let text: Event;
+let metadata: { [key: string]: string };
+const getItem = async () => {
+	const getText = await getSingleItem({ kind: 1, note: id });
+	console.log(getText);
+	if (getText) {
+		text = getText;
+	} else {
+		return;
+	}
+	const getMetadata = await getSingleItem({
+		kind: 0,
+		author: getText.pubkey,
+	});
+	if (getMetadata) metadata = JSON.parse(getMetadata.content);
+};
+getItem();
 </script>
 
 {#if text && metadata}
   <div class="item">
     <div class="d-flex">
+      {#if metadata.picture}
       <img src={metadata.picture} alt="" class="picture" />
+      {:else}
+      <img src="/image/app_icon.svg" alt="" class="picture" />
+      {/if}
       <p class="text-break">
         {metadata.display_name} @{metadata.name}
       </p>
