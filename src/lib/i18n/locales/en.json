@@ -11,5 +11,17 @@
   },
   "qr": {
     "make": "Make to QR Code"
+  },
+  "profile": {
+    "zap": "ZAP",
+    "zap_amount": "Amount (sats)",
+    "zap_comment": "Message",
+    "tap_to_copy": "Tap to Copy",
+    "zap_success": "ZAPPED!",
+    "zap_error": "Failed to send ZAP",
+    "close": "Close",
+    "cancel": "Cancel",
+    "send_zap": "Send ZAP",
+    "sending": "Sending..."
   }
 }

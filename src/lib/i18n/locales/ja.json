@@ -11,5 +11,17 @@
   },
   "qr": {
     "make": "QRコードを作る"
+  },
+  "profile": {
+    "zap": "ZAP",
+    "zap_amount": "金額 (sats)",
+    "zap_comment": "コメント",
+    "tap_to_copy": "タップしてコピー",
+    "zap_success": "ZAPPED！",
+    "zap_error": "ZAP失敗",
+    "close": "閉じる",
+    "cancel": "キャンセル",
+    "send_zap": "ZAPを送信",
+    "sending": "送信中..."
   }
 }
