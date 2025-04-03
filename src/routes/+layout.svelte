@@ -1,5 +1,6 @@
 <script>
 import "$lib/styles/style.scss";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import Footer from "$lib/components/Footer.svelte";
 </script>
 

@@ -30,6 +30,7 @@
     "vite": "^6.0.7"
   },
   "dependencies": {
+    "bootstrap-icons": "^1.11.3",
     "date-fns": "^4.1.0",
     "nostr-tools": "^2.10.4",
     "qrcode": "^1.5.4",
