@@ -91,4 +91,18 @@ export const clients: Client[] = [
     nip05: false,
     smartphone: false,
   },
+  {
+    key: "lumilumi",
+    name: 'Lumilumi',
+    imgsrc: '/image/lumilumi.svg',
+    url: {
+      npub: 'https://lumilumi.app/',
+      nprofile: 'https://lumilumi.app/',
+      note: 'https://lumilumi.app/',
+      nevent: 'https://lumilumi.app/',
+    },
+    nip05: false,
+    smartphone: false,
+  },
+
 ]
