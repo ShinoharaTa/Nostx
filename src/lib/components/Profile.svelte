@@ -77,7 +77,7 @@ const sendZapHandle = () => {
     {/if}
     {#if qrString}
       <div class="mt-4 text-center">
-        <img src={qrString} alt="" class="w-50 qr_backgroud">
+        <img src={qrString} alt="" class="w-50 qr_background">
       </div>
     {/if}
     <div class="mt-3 d-flex gap-2 justify-content-center">
@@ -130,7 +130,7 @@ const sendZapHandle = () => {
     white-space: pre-wrap;
   }
 
-  .qr_backgroud {
+  .qr_background {
     background: linear-gradient(
       135deg,
       #5a3e8b 5%,
