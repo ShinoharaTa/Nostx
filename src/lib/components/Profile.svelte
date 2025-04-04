@@ -56,7 +56,7 @@ const sendZapHandle = () => {
         </div>
       </div>
     </div>
-    <div class="mt-3 about">
+    <div class="mt-3 about text-break">
       {metadata.about}
     </div>
     {#if metadata.website}
