@@ -71,7 +71,7 @@ const copyInvoice = () => {
     {#if zapSuccess}
       {#if invoiceUrl}
       <div class="mt-4 text-center">
-        <img src={invoiceUrl} class="w-75 qr_backgroud" alt="" />
+        <img src={invoiceUrl} class="w-75 qr_background" alt="" />
       </div>
       <div class="mt-3 text-center">
         <i class="bi bi-copy"></i> {$_("profile.tap_to_copy")}
@@ -85,9 +85,9 @@ const copyInvoice = () => {
     {:else}
       <div class="align-items-center">
         <label for="zapAmount" class="form-label">{$_("profile.zap_amount")}</label>
-        <input 
-          type="number" 
-          class="form-control" 
+        <input
+          type="number"
+          class="form-control"
           bind:value={zapAmount}
         />
       </div>
@@ -117,9 +117,9 @@ const copyInvoice = () => {
           {$_("profile.close")}
         </button>
       {:else}
-        <button 
-          type="button" 
-          class="btn btn-warning" 
+        <button
+          type="button"
+          class="btn btn-warning"
           on:click={handleSendZap}
           disabled={zapAmount <= 0}
         >
@@ -135,7 +135,7 @@ const copyInvoice = () => {
   </Modal>
 
   <style>
-    .qr_backgroud {
+    .qr_background {
   background: linear-gradient(
     135deg,
     hsl(45, 100%, 25%) 0%,   /* ダークなイエロー */
