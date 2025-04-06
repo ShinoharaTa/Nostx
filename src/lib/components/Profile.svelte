@@ -4,11 +4,13 @@ import QRCode from "qrcode";
 import { getSingleItem } from "$lib/nostr";
 import { openModal } from "$lib/ui";
 import ZapModal from "$lib/components/ZapModal.svelte";
-  import { nip19 } from "nostr-tools";
+import { nip19 } from "nostr-tools";
+import { _ } from "svelte-i18n";
 
 export let id: string;
 let metadata: { [key: string]: string } | null | "failed" = null;
 let qrString = "";
+let npub = "";
 const getItem = async () => {
 	const data = await getSingleItem({ kind: 0, author: id });
 	if (!data) {
@@ -16,7 +18,7 @@ const getItem = async () => {
 		return;
 	}
 	metadata = JSON.parse(data.content);
-  const npub = nip19.npubEncode(id)
+	npub = nip19.npubEncode(id);
 	const opts = {
 		quality: 0.3,
 		color: {
@@ -37,6 +39,27 @@ getItem();
 const sendZapHandle = () => {
 	openModal();
 };
+
+const copyToNpub = () => {
+	navigator.clipboard
+		.writeText(npub)
+		.then(() => {
+			alert($_("profile.copied"));
+		})
+		.catch((error) => {
+			alert($_("profile.copy_failed"));
+		});
+}
+
+const shareToNpub = () => {
+  if(!metadata || metadata === "failed") return;
+  const name = metadata.display_name ?? metadata.name
+  navigator.share({
+    url: window.location.href
+  })
+  .then(() => console.log('共有に成功しました'))
+  .catch((error) => console.error('共有に失敗しました:', error));
+}
 </script>
 
 {#if !metadata}
@@ -82,17 +105,17 @@ const sendZapHandle = () => {
     {/if}
     <div class="mt-3 d-flex gap-2 justify-content-center">
       <div>
-        <button class="btn btn-sm btn-circle" on:click>
+        <button class="btn btn-sm btn-circle btn-light" on:click={copyToNpub}>
           <i class="bi bi-copy"></i> COPY
         </button>
       </div>
       <div>
-        <button class="btn btn-sm btn-circle" on:click>
+        <button class="btn btn-sm btn-circle btn-light" disabled={!navigator.share} on:click={shareToNpub}>
           <i class="bi bi-share-fill"></i> SHARE
         </button>
       </div>
       <div>
-        <button class="btn btn-sm btn-circle" on:click={sendZapHandle}>
+        <button class="btn btn-sm btn-circle btn-warning" disabled={!metadata.lud16} on:click={sendZapHandle}>
           <i class="bi bi-lightning-charge-fill"></i> ZAP
         </button>
       </div>
@@ -122,8 +145,6 @@ const sendZapHandle = () => {
 
   .btn-circle {
     border-radius: 20px;
-    border: 1px solid #ddd;
-    color: #ddd
   }
 
   .about {
