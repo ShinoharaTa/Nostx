@@ -6,11 +6,13 @@ import { openModal } from "$lib/ui";
 import ZapModal from "$lib/components/ZapModal.svelte";
 import { nip19 } from "nostr-tools";
 import { _ } from "svelte-i18n";
+import { queryProfile, type Nip05 } from "nostr-tools/nip05";
 
 export let id: string;
 let metadata: { [key: string]: string } | null | "failed" = null;
 let qrString = "";
 let npub = "";
+let nip05Verify= "";
 const getItem = async () => {
 	const data = await getSingleItem({ kind: 0, author: id });
 	if (!data) {
@@ -33,6 +35,9 @@ const getItem = async () => {
 		.catch((err: string) => {
 			qrString = "";
 		});
+	if (!metadata || metadata === "failed") return;
+	const result = await queryProfile(metadata.nip05);
+	nip05Verify = result ? "✅️" : "";
 };
 getItem();
 
@@ -49,17 +54,18 @@ const copyToNpub = () => {
 		.catch((error) => {
 			alert($_("profile.copy_failed"));
 		});
-}
+};
 
 const shareToNpub = () => {
-  if(!metadata || metadata === "failed") return;
-  const name = metadata.display_name ?? metadata.name
-  navigator.share({
-    url: window.location.href
-  })
-  .then(() => console.log('共有に成功しました'))
-  .catch((error) => console.error('共有に失敗しました:', error));
-}
+	if (!metadata || metadata === "failed") return;
+	const name = metadata.display_name ?? metadata.name;
+	navigator
+		.share({
+			url: window.location.href,
+		})
+		.then(() => console.log("共有に成功しました"))
+		.catch((error) => console.error("共有に失敗しました:", error));
+};
 </script>
 
 {#if !metadata}
@@ -90,7 +96,7 @@ const shareToNpub = () => {
     {/if}
     {#if metadata.nip05}
       <div class="mt-2">
-        <strong>NIP-05:</strong> {metadata.nip05}
+        <strong>NIP-05:</strong> {metadata.nip05} {nip05Verify}
       </div>
     {/if}
     {#if metadata.lud16}
