@@ -1,16 +1,27 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
-import { decode } from "nostr-tools/nip19";
+import { validateNip19Input } from "$lib/validation";
 import { _ } from "svelte-i18n";
 
 let nip19 = "";
+let errorKey: string | null = null;
+
 const jump = () => {
-	try {
-		console.log(nip19);
-		decode(nip19);
-		goto(`/${nip19}`);
-	} catch (e) {
-		console.log(e);
+	const result = validateNip19Input(nip19);
+	switch (result.status) {
+		case "ok":
+			errorKey = null;
+			goto(`/${nip19.trim()}`);
+			break;
+		case "nsec-warning":
+			errorKey = "validation.nsec_warning";
+			break;
+		case "unsupported":
+			errorKey = "validation.unsupported";
+			break;
+		default:
+			errorKey = "validation.invalid";
+			break;
 	}
 };
 </script>
@@ -31,6 +42,9 @@ const jump = () => {
       Nostrの情報を簡単に共有したり活用したりできるようサポートします</div>
     <form class="text-center mt-3">
       <input type="text" bind:value={nip19} class="form-control" placeholder="nevent1, nprofile1, npub1 ...">
+      {#if errorKey}
+        <div class="text-danger mt-2">{$_(errorKey)}</div>
+      {/if}
       <button class="btn btn-light mt-2" on:click={jump} type="button">npubやneventを開く</button>
     </form>
     <div class="text-center mt-5">
