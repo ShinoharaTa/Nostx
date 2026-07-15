@@ -36,8 +36,10 @@ const getItem = async () => {
 			qrString = "";
 		});
 	if (!metadata || metadata === "failed") return;
-	const result = await queryProfile(metadata.nip05);
-	nip05Verify = result ? "✅️" : "";
+	if (metadata.nip05) {
+		const result = await queryProfile(metadata.nip05);
+		nip05Verify = result ? "✅️" : "";
+	}
 };
 getItem();
 
