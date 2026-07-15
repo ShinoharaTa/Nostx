@@ -9,6 +9,11 @@
   "single": {
     "error": "URL を確認して下さい"
   },
+  "validation": {
+    "nsec_warning": "秘密鍵(nsec)は入力しないでください。秘密鍵は他人やサービスに渡さず、安全に保管してください",
+    "unsupported": "この形式は未対応です",
+    "invalid": "NIP-19形式として認識できません"
+  },
   "qr": {
     "make": "QRコードを作る"
   },

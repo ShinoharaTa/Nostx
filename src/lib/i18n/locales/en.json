@@ -9,6 +9,11 @@
   "single": {
     "error": "ERROR: please check URL"
   },
+  "validation": {
+    "nsec_warning": "Do not enter your secret key (nsec). Never share your secret key with anyone or any service.",
+    "unsupported": "This format is not supported yet.",
+    "invalid": "Could not be recognized as a NIP-19 format."
+  },
   "qr": {
     "make": "Make to QR Code"
   },
