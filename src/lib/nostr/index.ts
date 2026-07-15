@@ -84,6 +84,6 @@ export const sendZap = async (address: string, amount: number, comment: string) 
     return { success: true, message: "invoiceCreated", invoice: data.pr };
   } catch (error) {
     console.error('インボイス生成エラー:', error);
-    return { success: false, message: "failed", invoide: null };
+    return { success: false, message: "failed", invoice: null };
   }
 };
