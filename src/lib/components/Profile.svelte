@@ -13,6 +13,8 @@ let metadata: { [key: string]: string } | null | "failed" = null;
 let qrString = "";
 let npub = "";
 let nip05Verify= "";
+
+$: shortNpub = npub ? `${npub.slice(0, 12)}...` : "";
 const getItem = async () => {
 	const data = await getSingleItem({ kind: 0, author: id });
 	if (!data) {
@@ -36,8 +38,10 @@ const getItem = async () => {
 			qrString = "";
 		});
 	if (!metadata || metadata === "failed") return;
-	const result = await queryProfile(metadata.nip05);
-	nip05Verify = result ? "✅️" : "";
+	if (metadata.nip05) {
+		const result = await queryProfile(metadata.nip05);
+		nip05Verify = result ? "✅️" : "";
+	}
 };
 getItem();
 
@@ -78,11 +82,13 @@ const shareToNpub = () => {
       <img src={metadata.picture} alt="" class="picture" />
       <div>
         <div class="text-break">
-          {metadata.display_name}
+          {metadata.display_name || metadata.name || shortNpub}
         </div>
+        {#if metadata.name}
         <div class="text-break">
           @{metadata.name}
         </div>
+        {/if}
       </div>
     </div>
     <div class="mt-3 about text-break">
