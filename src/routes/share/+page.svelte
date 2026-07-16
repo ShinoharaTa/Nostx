@@ -1,25 +1,23 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
-
-const bech32Pattern =
-	/(?:npub1|nprofile1|note1|nevent1|naddr1|nsec1)[a-z0-9]+/;
+import { validateNip19Input } from "$lib/validation";
 
 onMount(() => {
 	const params = new URLSearchParams(window.location.search);
-	const shared = [
+	const candidates = [
 		params.get("text"),
 		params.get("url"),
 		params.get("title"),
-	]
-		.filter((value): value is string => !!value)
-		.join(" ");
-	const matched = shared.match(bech32Pattern);
-	if (matched) {
-		goto(`/${matched[0]}`, { replaceState: true });
-	} else {
-		goto("/", { replaceState: true });
+	].filter((value): value is string => !!value);
+	for (const candidate of candidates) {
+		const result = validateNip19Input(candidate);
+		if (result.status === "ok" && result.normalized) {
+			goto(`/${result.normalized}`, { replaceState: true });
+			return;
+		}
 	}
+	goto("/", { replaceState: true });
 });
 </script>
 
