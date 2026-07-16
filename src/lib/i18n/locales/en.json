@@ -32,7 +32,19 @@
     "download": "Download PNG",
     "share": "Share"
   },
+  "content": {
+    "fetch_failed": "Failed to load the post",
+    "retry": "Retry",
+    "show_more": "Show more",
+    "show_less": "Show less",
+    "copied": "Copied!",
+    "copy_failed": "Failed to copy"
+  },
   "profile": {
+    "fetch_failed": "Failed to load the profile",
+    "retry": "Retry",
+    "copied": "Copied!",
+    "copy_failed": "Failed to copy",
     "zap": "ZAP",
     "zap_amount": "Amount (sats)",
     "zap_comment": "Message",
