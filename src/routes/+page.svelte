@@ -17,7 +17,7 @@ const jump = () => {
 	switch (result.status) {
 		case "ok":
 			errorKey = null;
-			goto(`/${nip19.trim()}`);
+			goto(`/${result.normalized ?? nip19.trim()}`);
 			break;
 		case "nsec-warning":
 			errorKey = "validation.nsec_warning";
