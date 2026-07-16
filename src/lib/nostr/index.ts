@@ -33,19 +33,32 @@ const relays = [
   "wss://r.kojira.io",
 ];
 
+// リレーヒントを固定リレーリストとマージする(重複は除去)
+const mergeRelays = (hints?: string[]): string[] => {
+  if (!hints || hints.length === 0) return relays;
+  const valid = hints.filter(
+    (url) => url.startsWith("wss://") || url.startsWith("ws://"),
+  );
+  return Array.from(new Set([...relays, ...valid]));
+};
+
 export const getSingleItem = async (params: {
-  kind: number;
+  kind?: number;
   note?: string;
   author?: string;
+  relays?: string[];
 }) => {
-  const filters: Filter = { kinds: [params.kind] };
+  const filters: Filter = {};
+  if (params.kind !== undefined) {
+    filters.kinds = [params.kind];
+  }
   if (params.note) {
     filters.ids = [params.note];
   }
   if (params.author) {
     filters.authors = [params.author];
   }
-  const lastData = await pool.get(relays, filters);
+  const lastData = await pool.get(mergeRelays(params.relays), filters);
   return lastData;
 };
 
