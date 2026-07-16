@@ -9,6 +9,7 @@ import { _ } from "svelte-i18n";
 import { queryProfile, type Nip05 } from "nostr-tools/nip05";
 
 export let id: string;
+export let relays: string[] = [];
 let metadata: { [key: string]: string } | null | "failed" = null;
 let qrString = "";
 let npub = "";
@@ -16,7 +17,7 @@ let nip05Verify= "";
 
 $: shortNpub = npub ? `${npub.slice(0, 12)}...` : "";
 const getItem = async () => {
-	const data = await getSingleItem({ kind: 0, author: id });
+	const data = await getSingleItem({ kind: 0, author: id, relays });
 	if (!data) {
 		metadata = "failed";
 		return;
