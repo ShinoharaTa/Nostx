@@ -10,19 +10,28 @@ import { queryProfile, type Nip05 } from "nostr-tools/nip05";
 
 export let id: string;
 export let relays: string[] = [];
-let metadata: { [key: string]: string } | null | "failed" = null;
+let metadata: { [key: string]: string } | null = null;
+let status: "loading" | "loaded" | "failed" = "loading";
 let qrString = "";
 let npub = "";
 let nip05Verify= "";
 
 $: shortNpub = npub ? `${npub.slice(0, 12)}...` : "";
 const getItem = async () => {
-	const data = await getSingleItem({ kind: 0, author: id, relays });
-	if (!data) {
-		metadata = "failed";
+	status = "loading";
+	try {
+		const data = await getSingleItem({ kind: 0, author: id, relays });
+		if (!data) {
+			status = "failed";
+			return;
+		}
+		metadata = JSON.parse(data.content);
+	} catch {
+		// タイムアウトを含む取得失敗
+		status = "failed";
 		return;
 	}
-	metadata = JSON.parse(data.content);
+	status = "loaded";
 	npub = nip19.npubEncode(id);
 	const opts = {
 		quality: 0.3,
@@ -35,13 +44,17 @@ const getItem = async () => {
 		.then((result: string) => {
 			qrString = result;
 		})
-		.catch((err: string) => {
+		.catch(() => {
 			qrString = "";
 		});
-	if (!metadata || metadata === "failed") return;
+	if (!metadata) return;
 	if (metadata.nip05) {
-		const result = await queryProfile(metadata.nip05);
-		nip05Verify = result ? "✅️" : "";
+		try {
+			const result = await queryProfile(metadata.nip05);
+			nip05Verify = result ? "✅️" : "";
+		} catch {
+			nip05Verify = "";
+		}
 	}
 };
 getItem();
@@ -62,8 +75,7 @@ const copyToNpub = () => {
 };
 
 const shareToNpub = () => {
-	if (!metadata || metadata === "failed") return;
-	const name = metadata.display_name ?? metadata.name;
+	if (!metadata) return;
 	navigator
 		.share({
 			url: window.location.href,
@@ -73,10 +85,25 @@ const shareToNpub = () => {
 };
 </script>
 
-{#if !metadata}
-  loading
-{:else if metadata === "failed"}
-  取得に失敗しました
+{#if status === "loading"}
+  <div class="item" aria-busy="true">
+    <div class="d-flex mt-2 align-items-center">
+      <div class="skeleton skeleton-avatar"></div>
+      <div class="flex-grow-1">
+        <div class="skeleton skeleton-line w-50"></div>
+        <div class="skeleton skeleton-line w-25 mt-2"></div>
+      </div>
+    </div>
+    <div class="skeleton skeleton-line mt-3"></div>
+    <div class="skeleton skeleton-line mt-2 w-75"></div>
+  </div>
+{:else if status === "failed" || !metadata}
+  <div class="item text-center">
+    <div>{$_("profile.fetch_failed")}</div>
+    <button class="btn btn-sm btn-outline-light mt-3" on:click={getItem}>
+      <i class="bi bi-arrow-clockwise"></i> {$_("profile.retry")}
+    </button>
+  </div>
 {:else}
   <div class="item">
     <div class="d-flex mt-2">
@@ -158,6 +185,23 @@ const shareToNpub = () => {
 
   .btn-circle {
     border-radius: 20px;
+  }
+
+  .skeleton {
+    background: #333;
+    border-radius: 4px;
+  }
+
+  .skeleton-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+
+  .skeleton-line {
+    height: 0.9rem;
   }
 
   .about {

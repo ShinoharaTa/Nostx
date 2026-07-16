@@ -32,7 +32,13 @@
     "download": "PNGをダウンロード",
     "share": "共有する"
   },
+  "content": {
+    "fetch_failed": "投稿の取得に失敗しました",
+    "retry": "再試行"
+  },
   "profile": {
+    "fetch_failed": "プロフィールの取得に失敗しました",
+    "retry": "再試行",
     "zap": "ZAP",
     "zap_amount": "金額 (sats)",
     "zap_comment": "コメント",

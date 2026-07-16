@@ -32,7 +32,13 @@
     "download": "Download PNG",
     "share": "Share"
   },
+  "content": {
+    "fetch_failed": "Failed to load the post",
+    "retry": "Retry"
+  },
   "profile": {
+    "fetch_failed": "Failed to load the profile",
+    "retry": "Retry",
     "zap": "ZAP",
     "zap_amount": "Amount (sats)",
     "zap_comment": "Message",
