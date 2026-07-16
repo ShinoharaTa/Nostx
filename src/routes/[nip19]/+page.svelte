@@ -62,11 +62,19 @@ onMount(async () => {
               {#if nip19decode.type === "npub"}
                 <Profile id={nip19decode.data} />
               {:else if nip19decode.type === "nprofile"}
-                <Profile id={nip19decode.data.pubkey} />
+                <Profile
+                  id={nip19decode.data.pubkey}
+                  relays={nip19decode.data.relays ?? []}
+                />
               {:else if nip19decode.type === "note"}
                 <PostContent id={nip19decode.data} />
               {:else if nip19decode.type === "nevent"}
-                <PostContent id={nip19decode.data.id} />
+                <PostContent
+                  id={nip19decode.data.id}
+                  relays={nip19decode.data.relays ?? []}
+                  author={nip19decode.data.author}
+                  kind={nip19decode.data.kind}
+                />
               {/if}
             {/if}
           </div>
