@@ -1,10 +1,16 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
 import { validateNip19Input } from "$lib/validation";
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 
 let nip19 = "";
 let errorKey: string | null = null;
+let canPaste = false;
+
+onMount(() => {
+	canPaste = !!navigator.clipboard?.readText;
+});
 
 const jump = () => {
 	const result = validateNip19Input(nip19);
@@ -23,6 +29,18 @@ const jump = () => {
 			errorKey = "validation.invalid";
 			break;
 	}
+};
+
+const paste = async () => {
+	let text = "";
+	try {
+		text = await navigator.clipboard.readText();
+	} catch {
+		errorKey = "top.paste_failed";
+		return;
+	}
+	nip19 = text.trim();
+	jump();
 };
 </script>
 
@@ -43,6 +61,12 @@ const jump = () => {
       <input type="text" bind:value={nip19} class="form-control" placeholder="nevent1, nprofile1, npub1 ...">
       {#if errorKey}
         <div class="text-danger mt-2">{$_(errorKey)}</div>
+      {/if}
+      {#if canPaste}
+        <button class="btn btn-outline-light mt-2 me-2" on:click={paste} type="button">
+          <i class="bi bi-clipboard"></i>
+          {$_("top.paste")}
+        </button>
       {/if}
       <button class="btn btn-light mt-2" on:click={jump} type="button">{$_("top.open_button")}</button>
     </form>
