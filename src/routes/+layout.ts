@@ -1,12 +1,13 @@
 // +layout.ts
 import { browser } from "$app/environment";
-import "$lib/i18n";
+import { getInitialLocale } from "$lib/i18n";
 import { locale, waitLocale } from "svelte-i18n";
 import type { LayoutLoad } from "./$types";
 
 export const load: LayoutLoad = async () => {
   if (browser) {
-    locale.set(window.navigator.language);
+    // localStorage に保存された言語選択があればそれを優先し、なければブラウザの言語を使う
+    locale.set(getInitialLocale());
   }
   await waitLocale();
 };
