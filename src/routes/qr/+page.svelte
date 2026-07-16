@@ -1,16 +1,18 @@
 <script lang="ts">
 // @ts-ignore
 import QRCode from "qrcode";
+import { _ } from "svelte-i18n";
 
 let nip19 = "";
 let url = "";
+let origin = "https://nostx.io";
 const generate = () => {
 	if (nip19 === "") return;
 	QRCode.toDataURL(`https://nostx.io/${nip19}`)
 		.then((result: string) => {
 			url = result;
 		})
-		.catch((err: string) => {
+		.catch(() => {
 			url = "";
 		});
 };
@@ -25,9 +27,7 @@ const generate = () => {
     </div>
     <!-- <div class="mt-4" id="generatedQR"></div> -->
     <div class="mt-4 card py-3 bg-dark">
-      Nostrのnpub1, nprofile1, nevent1 ... 入力すると<br />
-      "https://nostx.io/npub..."の <br />
-      形式のQRコードを生成します
+      {$_("qr.description", { values: { origin } })}
     </div>
     {#if url}
       <div class="mt-4">
@@ -47,12 +47,12 @@ const generate = () => {
       ></textarea>
       <div class="mt-3">
         <button class="btn btn-lg bg-brand px-4" on:click={generate}>
-          QRコードを生成する
+          {$_("qr.generate")}
         </button>
       </div>
     </div>
     <div class="mt-4">
-      <a href="/" class=""> «　ホームへ戻る </a>
+      <a href="/" class=""> «　{$_("qr.back_home")} </a>
     </div>
   </div>
 </div>

@@ -14,8 +14,23 @@
     "unsupported": "This format is not supported yet.",
     "invalid": "Could not be recognized as a NIP-19 format."
   },
+  "top": {
+    "catchphrase": "Seamlessly into the world of Nostr",
+    "feature_title": "Easy NIP-19 conversion & sharing",
+    "feature_description": "Nostx reads NIP-19 codes used on Nostr and converts them into URLs that open in the apps and web services you already use, so you can share and make the most of Nostr content with ease.",
+    "open_button": "Open npub or nevent",
+    "paste": "Paste",
+    "paste_failed": "Could not read from the clipboard",
+    "qr_title": "Share with a QR code",
+    "qr_description": "Converts your input into a https://nostx.io/... style URL and generates a QR code that is easy to share"
+  },
   "qr": {
-    "make": "Make to QR Code"
+    "make": "Create a QR code",
+    "description": "Enter a Nostr npub1, nprofile1, nevent1 ... and a QR code for a \"{origin}/npub...\" style URL will be generated",
+    "generate": "Generate QR code",
+    "back_home": "Back to Home",
+    "download": "Download PNG",
+    "share": "Share"
   },
   "profile": {
     "zap": "ZAP",
