@@ -9,6 +9,7 @@ import {
 } from "nostr-tools/nip19";
 export let client: Client;
 export let result: DecodeResult;
+export let variant: "default" | "primary" = "default";
 
 const linkUrl = () => {
 	let nip19Encode = "";
@@ -39,16 +40,30 @@ const linkUrl = () => {
 };
 </script>
 
-<div class="col-4">
-  <a class="item mt-2 text-center" href="{linkUrl()}">
-    <div class="d-flex justify-content-center">
+{#if variant === "primary"}
+  <div class="col-12">
+    <a
+      class="item item_primary mt-2 d-flex align-items-center justify-content-center"
+      href="{linkUrl()}"
+    >
       <div class="bg-white app_icon">
         <img src={client.imgsrc} alt="" class="img-fluid" />
       </div>
-    </div>
-    <div class="app_text mt-1">{client.name}</div>
-  </a>
-</div>
+      <div class="primary_text ms-2">{client.name}</div>
+    </a>
+  </div>
+{:else}
+  <div class="col-4">
+    <a class="item mt-2 text-center" href="{linkUrl()}">
+      <div class="d-flex justify-content-center">
+        <div class="bg-white app_icon">
+          <img src={client.imgsrc} alt="" class="img-fluid" />
+        </div>
+      </div>
+      <div class="app_text mt-1">{client.name}</div>
+    </a>
+  </div>
+{/if}
 
 <style>
   a {
@@ -69,5 +84,12 @@ const linkUrl = () => {
   .item {
     padding: 0.6rem 0;
     width: 100%;
+  }
+  .item_primary {
+    display: flex;
+    padding: 0.8rem 0;
+  }
+  .primary_text {
+    font-size: 1rem;
   }
 </style>
