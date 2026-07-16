@@ -88,6 +88,40 @@ const truncateTokens = (tokens: Token[], limit: number): Token[] => {
 	return result;
 };
 
+let copyMenuOpen = false;
+
+// 指定した形式でクリップボードにコピーする
+const copyAs = (copyFormat: "note" | "nevent" | "hex") => {
+	copyMenuOpen = false;
+	let value = "";
+	try {
+		if (copyFormat === "note") {
+			value = nip19.noteEncode(id);
+		} else if (copyFormat === "nevent") {
+			// 取得済みのリレーヒント・作者があれば含める
+			const pointer: { id: string; relays?: string[]; author?: string } = {
+				id,
+			};
+			if (relays.length > 0) pointer.relays = relays;
+			if (text) pointer.author = text.pubkey;
+			value = nip19.neventEncode(pointer);
+		} else {
+			value = id;
+		}
+	} catch {
+		alert($_("content.copy_failed"));
+		return;
+	}
+	navigator.clipboard
+		.writeText(value)
+		.then(() => {
+			alert($_("content.copied"));
+		})
+		.catch(() => {
+			alert($_("content.copy_failed"));
+		});
+};
+
 $: shortNpub = text ? `${nip19.npubEncode(text.pubkey).slice(0, 12)}...` : "";
 $: tokens = text ? tokenize(text.content) : [];
 $: isLong = text ? text.content.length > CONTENT_COLLAPSE_LIMIT : false;
@@ -184,8 +218,27 @@ getItem();
     <div class="text-end mt-2">
       {format(fromUnixTime(text.created_at), "yyyy/MM/dd HH:mm")}
     </div>
+    <div class="d-flex justify-content-end mt-2">
+      <div class="position-relative">
+        <button
+          class="btn btn-sm btn-circle btn-light"
+          on:click|stopPropagation={() => (copyMenuOpen = !copyMenuOpen)}
+        >
+          <i class="bi bi-copy"></i> COPY
+        </button>
+        {#if copyMenuOpen}
+          <div class="copy-menu">
+            <button class="copy-menu-item" on:click={() => copyAs("note")}>note</button>
+            <button class="copy-menu-item" on:click={() => copyAs("nevent")}>nevent</button>
+            <button class="copy-menu-item" on:click={() => copyAs("hex")}>hex</button>
+          </div>
+        {/if}
+      </div>
+    </div>
   </div>
 {/if}
+
+<svelte:window on:click={() => (copyMenuOpen = false)} />
 
 <style>
   .picture {
@@ -229,5 +282,37 @@ getItem();
 
   .item a {
     word-break: break-all;
+  }
+
+  .btn-circle {
+    border-radius: 20px;
+  }
+
+  .copy-menu {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    right: 0;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    min-width: 6.5rem;
+    white-space: nowrap;
+  }
+
+  .copy-menu-item {
+    display: block;
+    width: 100%;
+    padding: 0.4rem 1rem;
+    background: none;
+    border: none;
+    color: #eee;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .copy-menu-item:hover {
+    background: #444;
   }
 </style>

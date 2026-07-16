@@ -63,13 +63,33 @@ const sendZapHandle = () => {
 	openModal();
 };
 
-const copyToNpub = () => {
+let copyMenuOpen = false;
+
+// 指定した形式でクリップボードにコピーする
+const copyAs = (copyFormat: "npub" | "nprofile" | "hex") => {
+	copyMenuOpen = false;
+	let value = "";
+	try {
+		if (copyFormat === "npub") {
+			value = nip19.npubEncode(id);
+		} else if (copyFormat === "nprofile") {
+			// 取得済みのリレーヒントがあれば含める
+			value = nip19.nprofileEncode(
+				relays.length > 0 ? { pubkey: id, relays } : { pubkey: id },
+			);
+		} else {
+			value = id;
+		}
+	} catch {
+		alert($_("profile.copy_failed"));
+		return;
+	}
 	navigator.clipboard
-		.writeText(npub)
+		.writeText(value)
 		.then(() => {
 			alert($_("profile.copied"));
 		})
-		.catch((error) => {
+		.catch(() => {
 			alert($_("profile.copy_failed"));
 		});
 };
@@ -144,10 +164,20 @@ const shareToNpub = () => {
       </div>
     {/if}
     <div class="mt-3 d-flex gap-2 justify-content-center">
-      <div>
-        <button class="btn btn-sm btn-circle btn-light" on:click={copyToNpub}>
+      <div class="position-relative">
+        <button
+          class="btn btn-sm btn-circle btn-light"
+          on:click|stopPropagation={() => (copyMenuOpen = !copyMenuOpen)}
+        >
           <i class="bi bi-copy"></i> COPY
         </button>
+        {#if copyMenuOpen}
+          <div class="copy-menu">
+            <button class="copy-menu-item" on:click={() => copyAs("npub")}>npub</button>
+            <button class="copy-menu-item" on:click={() => copyAs("nprofile")}>nprofile</button>
+            <button class="copy-menu-item" on:click={() => copyAs("hex")}>hex</button>
+          </div>
+        {/if}
       </div>
       <div>
         <button class="btn btn-sm btn-circle btn-light" disabled={!navigator.share} on:click={shareToNpub}>
@@ -165,6 +195,8 @@ const shareToNpub = () => {
   <ZapModal lud16={metadata.lud16}></ZapModal>
   {/if}
 {/if}
+
+<svelte:window on:click={() => (copyMenuOpen = false)} />
 
 <style>
   .picture {
@@ -202,6 +234,34 @@ const shareToNpub = () => {
 
   .skeleton-line {
     height: 0.9rem;
+  }
+
+  .copy-menu {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    min-width: 6.5rem;
+  }
+
+  .copy-menu-item {
+    display: block;
+    width: 100%;
+    padding: 0.4rem 1rem;
+    background: none;
+    border: none;
+    color: #eee;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .copy-menu-item:hover {
+    background: #444;
   }
 
   .about {
