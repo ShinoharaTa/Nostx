@@ -34,7 +34,9 @@
   },
   "content": {
     "fetch_failed": "Failed to load the post",
-    "retry": "Retry"
+    "retry": "Retry",
+    "show_more": "Show more",
+    "show_less": "Show less"
   },
   "profile": {
     "fetch_failed": "Failed to load the profile",

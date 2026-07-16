@@ -34,7 +34,9 @@
   },
   "content": {
     "fetch_failed": "投稿の取得に失敗しました",
-    "retry": "再試行"
+    "retry": "再試行",
+    "show_more": "もっと見る",
+    "show_less": "折りたたむ"
   },
   "profile": {
     "fetch_failed": "プロフィールの取得に失敗しました",
