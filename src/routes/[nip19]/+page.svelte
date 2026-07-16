@@ -15,8 +15,17 @@ const validation = validateNip19Input(key);
 
 let nip19decode: DecodeResult | null;
 let process = true;
+let isMobile = false;
+
+const appsClient = clients.find((client) => client.key === "apps");
+$: listClients = isMobile
+	? clients.filter((client) => client.key !== "apps")
+	: clients;
 
 onMount(async () => {
+	isMobile =
+		window.innerWidth < 768 ||
+		/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
 	if (validation.status === "nsec-warning" || validation.status === "unsupported") {
 		// 秘密鍵や未対応形式はクライアントへ渡さない
 		nip19decode = null;
@@ -70,9 +79,18 @@ onMount(async () => {
               {/if}
             {/if}
           </div>
+          {#if isMobile && appsClient}
+            <div class="row g-2 mt-2">
+              <Application
+                client={appsClient}
+                result={nip19decode}
+                variant="primary"
+              />
+            </div>
+          {/if}
           <div class="mt-3 text-center">{$_("app.client_select")}</div>
           <div class="row g-2">
-            {#each clients as client}
+            {#each listClients as client}
               <Application {client} result={nip19decode} />
             {/each}
           </div>
