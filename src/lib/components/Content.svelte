@@ -9,6 +9,9 @@ export let id: string;
 export let relays: string[] = [];
 export let author: string | undefined = undefined;
 export let kind: number | undefined = undefined;
+// サーバー(+page.server.ts)で取得済みの初期データ(あればクライアント再取得をスキップする)
+export let initialEvent: Event | null = null;
+export let initialMetadata: { [key: string]: string } | null = null;
 let text: Event | null = null;
 let metadata: { [key: string]: string } | null = null;
 let status: "loading" | "loaded" | "failed" = "loading";
@@ -127,6 +130,19 @@ $: tokens = text ? tokenize(text.content) : [];
 $: isLong = text ? text.content.length > CONTENT_COLLAPSE_LIMIT : false;
 $: displayTokens =
 	isLong && !expanded ? truncateTokens(tokens, CONTENT_COLLAPSE_LIMIT) : tokens;
+// 投稿者のプロフィール(kind:0)を取得する(失敗しても本文表示には影響させない)
+const getAuthorMetadata = async (pubkey: string) => {
+	try {
+		const getMetadata = await getSingleItem({
+			kind: 0,
+			author: pubkey,
+			relays,
+		});
+		if (getMetadata) metadata = JSON.parse(getMetadata.content);
+	} catch {
+		// プロフィール取得失敗は無視する
+	}
+};
 const getItem = async () => {
 	status = "loading";
 	try {
@@ -140,18 +156,23 @@ const getItem = async () => {
 		status = "loaded";
 		// kind:1以外は簡易表示のためプロフィール取得は行わない
 		if (getText.kind !== 1) return;
-		const getMetadata = await getSingleItem({
-			kind: 0,
-			author: getText.pubkey,
-			relays,
-		});
-		if (getMetadata) metadata = JSON.parse(getMetadata.content);
+		await getAuthorMetadata(getText.pubkey);
 	} catch {
-		// タイムアウトを含む取得失敗(本文が取得済みならプロフィール失敗は無視する)
+		// タイムアウトを含む取得失敗
 		if (status !== "loaded") status = "failed";
 	}
 };
-getItem();
+if (initialEvent) {
+	// サーバー取得済みのイベントがあれば再取得せずに使う
+	text = initialEvent;
+	metadata = initialMetadata;
+	status = "loaded";
+	if (initialEvent.kind === 1 && !initialMetadata) {
+		getAuthorMetadata(initialEvent.pubkey);
+	}
+} else {
+	getItem();
+}
 </script>
 
 {#if status === "loading"}
