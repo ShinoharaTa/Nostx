@@ -57,7 +57,7 @@ const withTimeout = <T>(
 };
 
 // リレーヒントを固定リレーリストとマージする(重複は除去)
-const mergeRelays = (hints?: string[]): string[] => {
+export const mergeRelays = (hints?: string[]): string[] => {
   if (!hints || hints.length === 0) return relays;
   const valid = hints.filter(
     (url) => url.startsWith("wss://") || url.startsWith("ws://"),
