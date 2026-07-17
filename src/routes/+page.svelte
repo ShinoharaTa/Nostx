@@ -4,9 +4,9 @@ import { validateNip19Input } from "$lib/validation";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 
-let nip19 = "";
-let errorKey: string | null = null;
-let canPaste = false;
+let nip19 = $state("");
+let errorKey = $state<string | null>(null);
+let canPaste = $state(false);
 
 onMount(() => {
 	canPaste = !!navigator.clipboard?.readText;
@@ -63,12 +63,12 @@ const paste = async () => {
         <div class="text-danger mt-2">{$_(errorKey)}</div>
       {/if}
       {#if canPaste}
-        <button class="btn btn-outline-light mt-2 me-2" on:click={paste} type="button">
+        <button class="btn btn-outline-light mt-2 me-2" onclick={paste} type="button">
           <i class="bi bi-clipboard"></i>
           {$_("top.paste")}
         </button>
       {/if}
-      <button class="btn btn-light mt-2" on:click={jump} type="button">{$_("top.open_button")}</button>
+      <button class="btn btn-light mt-2" onclick={jump} type="button">{$_("top.open_button")}</button>
     </form>
     <div class="text-center mt-5">
       <div class="fs-4 mt-2">{$_("top.qr_title")}</div>

@@ -8,17 +8,23 @@ import { nip19 } from "nostr-tools";
 import { _ } from "svelte-i18n";
 import { queryProfile, type Nip05 } from "nostr-tools/nip05";
 
-export let id: string;
-export let relays: string[] = [];
-// サーバー(+page.server.ts)で取得済みのプロフィール(あればクライアント再取得をスキップする)
-export let initialMetadata: { [key: string]: string } | null = null;
-let metadata: { [key: string]: string } | null = null;
-let status: "loading" | "loaded" | "failed" = "loading";
-let qrString = "";
-let npub = "";
-let nip05Verify= "";
+let {
+	id,
+	relays = [],
+	// サーバー(+page.server.ts)で取得済みのプロフィール(あればクライアント再取得をスキップする)
+	initialMetadata = null,
+}: {
+	id: string;
+	relays?: string[];
+	initialMetadata?: { [key: string]: string } | null;
+} = $props();
+let metadata = $state<{ [key: string]: string } | null>(null);
+let status = $state<"loading" | "loaded" | "failed">("loading");
+let qrString = $state("");
+let npub = $state("");
+let nip05Verify = $state("");
 
-$: shortNpub = npub ? `${npub.slice(0, 12)}...` : "";
+const shortNpub = $derived(npub ? `${npub.slice(0, 12)}...` : "");
 // プロフィール取得後の付随処理(npub表示・QRコード生成・NIP-05検証)
 const applyMetadataExtras = async () => {
 	npub = nip19.npubEncode(id);
@@ -76,7 +82,7 @@ const sendZapHandle = () => {
 	openModal();
 };
 
-let copyMenuOpen = false;
+let copyMenuOpen = $state(false);
 
 // 指定した形式でクリップボードにコピーする
 const copyAs = (copyFormat: "npub" | "nprofile" | "hex") => {
@@ -133,7 +139,7 @@ const shareToNpub = () => {
 {:else if status === "failed" || !metadata}
   <div class="item text-center">
     <div>{$_("profile.fetch_failed")}</div>
-    <button class="btn btn-sm btn-outline-light mt-3" on:click={getItem}>
+    <button class="btn btn-sm btn-outline-light mt-3" onclick={getItem}>
       <i class="bi bi-arrow-clockwise"></i> {$_("profile.retry")}
     </button>
   </div>
@@ -180,25 +186,28 @@ const shareToNpub = () => {
       <div class="position-relative">
         <button
           class="btn btn-sm btn-circle btn-light"
-          on:click|stopPropagation={() => (copyMenuOpen = !copyMenuOpen)}
+          onclick={(event) => {
+            event.stopPropagation();
+            copyMenuOpen = !copyMenuOpen;
+          }}
         >
           <i class="bi bi-copy"></i> COPY
         </button>
         {#if copyMenuOpen}
           <div class="copy-menu">
-            <button class="copy-menu-item" on:click={() => copyAs("npub")}>npub</button>
-            <button class="copy-menu-item" on:click={() => copyAs("nprofile")}>nprofile</button>
-            <button class="copy-menu-item" on:click={() => copyAs("hex")}>hex</button>
+            <button class="copy-menu-item" onclick={() => copyAs("npub")}>npub</button>
+            <button class="copy-menu-item" onclick={() => copyAs("nprofile")}>nprofile</button>
+            <button class="copy-menu-item" onclick={() => copyAs("hex")}>hex</button>
           </div>
         {/if}
       </div>
       <div>
-        <button class="btn btn-sm btn-circle btn-light" disabled={!navigator.share} on:click={shareToNpub}>
+        <button class="btn btn-sm btn-circle btn-light" disabled={!navigator.share} onclick={shareToNpub}>
           <i class="bi bi-share-fill"></i> SHARE
         </button>
       </div>
       <div>
-        <button class="btn btn-sm btn-circle btn-warning" disabled={!metadata.lud16} on:click={sendZapHandle}>
+        <button class="btn btn-sm btn-circle btn-warning" disabled={!metadata.lud16} onclick={sendZapHandle}>
           <i class="bi bi-lightning-charge-fill"></i> ZAP
         </button>
       </div>
@@ -209,7 +218,7 @@ const shareToNpub = () => {
   {/if}
 {/if}
 
-<svelte:window on:click={() => (copyMenuOpen = false)} />
+<svelte:window onclick={() => (copyMenuOpen = false)} />
 
 <style>
   .picture {

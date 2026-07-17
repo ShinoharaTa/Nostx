@@ -6,13 +6,14 @@ export const SUPPORTED_NIP19_TYPES = [
   "nprofile",
   "note",
   "nevent",
+  "naddr",
 ] as const;
 
 export type SupportedNip19Type = (typeof SUPPORTED_NIP19_TYPES)[number];
 
 export type Nip19ValidationStatus =
   | "ok" // 対応形式としてデコード成功
-  | "unsupported" // デコードは成功するが Nostx 未対応の形式 (naddr など)
+  | "unsupported" // デコードは成功するが Nostx 未対応の形式 (nrelay など)
   | "nsec-warning" // 秘密鍵 (nsec) が入力された
   | "invalid"; // NIP-19 形式として認識できない
 

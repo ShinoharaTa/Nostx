@@ -13,8 +13,8 @@ const EVENT_FETCH_TIMEOUT_MS = 2000;
 
 /** [nip19] ページの OGP 表示・初期データに使うサーバー取得結果 */
 export interface OgpData {
-  type: "npub" | "nprofile" | "note" | "nevent";
-  /** note/nevent の対象イベント */
+  type: "npub" | "nprofile" | "note" | "nevent" | "naddr";
+  /** note/nevent/naddr の対象イベント */
   event: Event | null;
   /** 対象の(または投稿者の)kind:0 プロフィールイベント */
   profile: Event | null;
@@ -95,6 +95,38 @@ export const load: PageServerLoad = async ({ params }) => {
         profile = null;
       }
       return { ogp: { type: decoded.type, event, profile } };
+    }
+
+    if (decoded.type === "naddr") {
+      const { kind, pubkey, identifier } = decoded.data;
+      const relays = mergeRelays(decoded.data.relays);
+      // 記事本体(kind + author + #d)とプロフィールを並列取得する
+      const [event, profile] = await Promise.all([
+        fetchLatestEvent(
+          relays,
+          { kinds: [kind], authors: [pubkey], "#d": [identifier], limit: 1 },
+          remaining(),
+        ),
+        fetchLatestEvent(
+          relays,
+          { kinds: [0], authors: [pubkey], limit: 1 },
+          remaining(),
+        ),
+      ]);
+      // 想定外のイベントを返すリレーがあっても OGP に使わない
+      const matchedEvent =
+        event &&
+        event.kind === kind &&
+        event.pubkey === pubkey &&
+        Array.isArray(event.tags) &&
+        event.tags.some((tag) => tag[0] === "d" && (tag[1] ?? "") === identifier)
+          ? event
+          : null;
+      const matchedProfile =
+        profile && profile.kind === 0 && profile.pubkey === pubkey
+          ? profile
+          : null;
+      return { ogp: { type: decoded.type, event: matchedEvent, profile: matchedProfile } };
     }
 
     return fallback;

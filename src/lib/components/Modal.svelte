@@ -1,6 +1,15 @@
 <script lang="ts">
+import type { Snippet } from "svelte";
 import { showModal, closeModal } from "$lib/ui";
-export let modalTitle: null | string = null;
+let {
+	modalTitle = null,
+	children,
+	footer,
+}: {
+	modalTitle?: null | string;
+	children?: Snippet;
+	footer?: Snippet;
+} = $props();
 </script>
 
 <!-- ZAP Modal -->
@@ -11,13 +20,13 @@ export let modalTitle: null | string = null;
         <div class="modal-header">
           <div class="modal-title">{modalTitle}</div>
           <!-- svelte-ignore a11y_consider_explicit_label -->
-          <button type="button" class="btn-close" on:click={closeModal}></button>
+          <button type="button" class="btn-close" onclick={closeModal}></button>
         </div>
         <div class="modal-body">
-          <slot></slot>
+          {@render children?.()}
         </div>
         <div class="modal-footer">
-          <slot name="footer"></slot>
+          {@render footer?.()}
         </div>
       </div>
     </div>

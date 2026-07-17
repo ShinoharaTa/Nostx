@@ -4,6 +4,8 @@ import Application from "$lib/components/Application.svelte";
 import { clients } from "$lib/const";
 import { page } from "$app/state";
 import { parseQuery } from "$lib/nostr";
+import { getLastClientKey } from "$lib/preferences";
+import Article from "$lib/components/Article.svelte";
 import PostContent from "$lib/components/Content.svelte";
 import Profile from "$lib/components/Profile.svelte";
 import { _ } from "svelte-i18n";
@@ -13,14 +15,15 @@ import { nip19 as nip19tools } from "nostr-tools";
 import { validateNip19Input } from "$lib/validation";
 import type { PageData } from "./$types";
 
-export let data: PageData;
+let { data }: { data: PageData } = $props();
 
 const key: string = page.params.nip19;
 const validation = validateNip19Input(key);
 
-let nip19decode: DecodeResult | null;
-let process = true;
-let isMobile = false;
+let nip19decode = $state<DecodeResult | null>();
+let process = $state(true);
+let isMobile = $state(false);
+let lastClientKey = $state<string | null>(null);
 
 // ---- サーバー(load)で取得済みの OGP 用データ ----
 const ogp = data.ogp;
@@ -64,12 +67,34 @@ const resolveDisplayName = (pubkey: string): string => {
 // ---- OGP メタタグの値を組み立てる(データなし時は汎用 OGP) ----
 const GENERIC_OGP_DESCRIPTION =
 	"Nostx is a redirect service that opens Nostr profiles and notes in your favorite Nostr apps.";
-let ogTitle = "Nostx";
-let ogDescription = GENERIC_OGP_DESCRIPTION;
-let ogImage = `${page.url.origin}/image/nostxlogo.svg`;
+let ogTitle = $state("Nostx");
+let ogDescription = $state(GENERIC_OGP_DESCRIPTION);
+let ogImage = $state(`${page.url.origin}/image/nostxlogo.svg`);
+
+// イベントのタグから最初の値を取り出す
+const getTagValue = (event: Event, name: string): string | undefined => {
+	const tag = event.tags.find((t) => t[0] === name && t[1]);
+	return tag?.[1];
+};
 
 const serverPicture = serverProfile?.picture;
-if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
+if (ogp && ogp.type === "naddr" && serverEvent) {
+	// 記事: og:title = title タグ、og:description = summary タグまたは content 先頭 150 字
+	const articleTitle = getTagValue(serverEvent, "title");
+	if (articleTitle) {
+		ogTitle = articleTitle;
+	}
+	const summary = getTagValue(serverEvent, "summary") ?? serverEvent.content;
+	if (summary) {
+		ogDescription = truncateForOgp(summary);
+	}
+	const articleImage = getTagValue(serverEvent, "image");
+	if (isHttpUrl(articleImage)) {
+		ogImage = articleImage;
+	} else if (isHttpUrl(serverPicture)) {
+		ogImage = serverPicture;
+	}
+} else if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
 	ogTitle = resolveDisplayName(ogp.profile.pubkey);
 	if (serverProfile?.about) {
 		ogDescription = truncateForOgp(serverProfile.about);
@@ -87,15 +112,31 @@ if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
 	}
 }
 
+// naddr のときは naddr 対応 URL を持つクライアントだけを表示対象にする
+const supportsCurrentType = (client: (typeof clients)[number]): boolean =>
+	nip19decode?.type !== "naddr" || Boolean(client.url.naddr);
 const appsClient = clients.find((client) => client.key === "apps");
-$: listClients = isMobile
-	? clients.filter((client) => client.key !== "apps")
-	: clients;
+// 前回使ったアプリ(記録がなければ null)。大ボタンとして先頭に表示する
+const lastClient = $derived(
+	clients.find(
+		(client) => client.key === lastClientKey && supportsCurrentType(client),
+	) ?? null,
+);
+// 大ボタン(前回使ったアプリ・モバイルの「アプリで開く」)に出したクライアントは一覧から除外する
+const listClients = $derived(
+	clients.filter(
+		(client) =>
+			supportsCurrentType(client) &&
+			client.key !== lastClient?.key &&
+			!(isMobile && client.key === "apps"),
+	),
+);
 
 onMount(async () => {
 	isMobile =
 		window.innerWidth < 768 ||
 		/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+	lastClientKey = getLastClientKey();
 	if (validation.status === "nsec-warning" || validation.status === "unsupported") {
 		// 秘密鍵や未対応形式はクライアントへ渡さない
 		nip19decode = null;
@@ -170,10 +211,29 @@ onMount(async () => {
                   initialEvent={serverEvent}
                   initialMetadata={serverProfile}
                 />
+              {:else if nip19decode.type === "naddr"}
+                <Article
+                  kind={nip19decode.data.kind}
+                  pubkey={nip19decode.data.pubkey}
+                  identifier={nip19decode.data.identifier}
+                  relays={nip19decode.data.relays ?? []}
+                  initialEvent={serverEvent}
+                  initialMetadata={serverProfile}
+                />
               {/if}
             {/if}
           </div>
-          {#if isMobile && appsClient}
+          {#if lastClient}
+            <div class="mt-3 text-center">{$_("app.last_used")}</div>
+            <div class="row g-2">
+              <Application
+                client={lastClient}
+                result={nip19decode}
+                variant="primary"
+              />
+            </div>
+          {/if}
+          {#if isMobile && appsClient && appsClient.key !== lastClientKey}
             <div class="row g-2 mt-2">
               <Application
                 client={appsClient}

@@ -6,15 +6,15 @@ import { _ } from "svelte-i18n";
 import QRCode from "qrcode";
 import { sendZap } from "$lib/nostr";
 
-let zapSuccess = false;
-let zapError = "";
-let zapAmount = 10;
-let zapComment = "";
-let zapSending = false;
-let invoice: string | null = null;
-let invoiceUrl: string | null = null;
+let zapSuccess = $state(false);
+let zapError = $state("");
+let zapAmount = $state(10);
+let zapComment = $state("");
+let zapSending = $state(false);
+let invoice = $state<string | null>(null);
+let invoiceUrl = $state<string | null>(null);
 
-export let lud16: string | null = null;
+let { lud16 = null }: { lud16?: string | null } = $props();
 async function handleSendZap() {
 	if (zapAmount <= 0) return;
 
@@ -75,7 +75,7 @@ const copyInvoice = () => {
       </div>
       <div class="mt-3 text-center">
         <i class="bi bi-copy"></i> {$_("profile.tap_to_copy")}
-        <button class="form-control form-control-sm text-break mt-2" on:click={copyInvoice}>{invoice}</button>
+        <button class="form-control form-control-sm text-break mt-2" onclick={copyInvoice}>{invoice}</button>
       </div>
       {/if}
     {:else if zapError}
@@ -95,7 +95,7 @@ const copyInvoice = () => {
         {#each [21, 88, 100, 500] as amount}
           <button
             class="btn btn-sm btn-outline-warning"
-            on:click={() => zapAmount = amount}
+            onclick={() => zapAmount = amount}
           >
             {amount}
           </button>
@@ -111,27 +111,29 @@ const copyInvoice = () => {
       </div>
     {/if}
     </div>
-    <div slot="footer" class="w-100 text-center">
-      {#if zapSuccess}
-        <button type="button" class="btn btn-secondary" on:click={closeModal}>
-          {$_("profile.close")}
-        </button>
-      {:else}
-        <button
-          type="button"
-          class="btn btn-warning"
-          on:click={handleSendZap}
-          disabled={zapAmount <= 0}
-        >
-          {#if zapSending}
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            {$_("profile.sending")}
-          {:else}
-            {$_("profile.send_zap")}
-          {/if}
-        </button>
-      {/if}
-    </div>
+    {#snippet footer()}
+      <div class="w-100 text-center">
+        {#if zapSuccess}
+          <button type="button" class="btn btn-secondary" onclick={closeModal}>
+            {$_("profile.close")}
+          </button>
+        {:else}
+          <button
+            type="button"
+            class="btn btn-warning"
+            onclick={handleSendZap}
+            disabled={zapAmount <= 0}
+          >
+            {#if zapSending}
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {$_("profile.sending")}
+            {:else}
+              {$_("profile.send_zap")}
+            {/if}
+          </button>
+        {/if}
+      </div>
+    {/snippet}
   </Modal>
 
   <style>
