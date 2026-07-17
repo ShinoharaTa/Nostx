@@ -7,9 +7,15 @@ import {
 	npubEncode,
 	type DecodeResult,
 } from "nostr-tools/nip19";
-export let client: Client;
-export let result: DecodeResult;
-export let variant: "default" | "primary" = "default";
+let {
+	client,
+	result,
+	variant = "default",
+}: {
+	client: Client;
+	result: DecodeResult;
+	variant?: "default" | "primary";
+} = $props();
 
 const linkUrl = () => {
 	let nip19Encode = "";
