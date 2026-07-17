@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Client } from "$lib/const";
+import { setLastClientKey } from "$lib/preferences";
 import {
 	neventEncode,
 	noteEncode,
@@ -44,6 +45,11 @@ const linkUrl = () => {
 	}
 	return clientUrl + nip19Encode;
 };
+
+// クリックしたクライアントを「前回使ったアプリ」として記録する(遷移は既存の href に任せる)
+const rememberClient = () => {
+	setLastClientKey(client.key);
+};
 </script>
 
 {#if variant === "primary"}
@@ -51,6 +57,7 @@ const linkUrl = () => {
     <a
       class="item item_primary mt-2 d-flex align-items-center justify-content-center"
       href="{linkUrl()}"
+      onclick={rememberClient}
     >
       <div class="bg-white app_icon">
         <img src={client.imgsrc} alt="" class="img-fluid" />
@@ -60,7 +67,7 @@ const linkUrl = () => {
   </div>
 {:else}
   <div class="col-4">
-    <a class="item mt-2 text-center" href="{linkUrl()}">
+    <a class="item mt-2 text-center" href="{linkUrl()}" onclick={rememberClient}>
       <div class="d-flex justify-content-center">
         <div class="bg-white app_icon">
           <img src={client.imgsrc} alt="" class="img-fluid" />
