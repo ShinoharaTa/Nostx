@@ -52,6 +52,13 @@ textarea:focus-visible {
   color: #eee
 }
 
+// Bootstrap 標準の danger (#dc3545) は黒背景で WCAG AA (4.5:1) を満たさないため
+// 明るめの赤に調整する (#ff6b6b: #101010 上で 6.86:1、#222 上で 5.73:1)
+.text-danger,
+.border-danger {
+  --bs-danger-rgb: 255, 107, 107;
+}
+
 .error_icon {
   border-radius: 50%;
   overflow: hidden;
