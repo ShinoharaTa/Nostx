@@ -111,27 +111,29 @@ const copyInvoice = () => {
       </div>
     {/if}
     </div>
-    <div slot="footer" class="w-100 text-center">
-      {#if zapSuccess}
-        <button type="button" class="btn btn-secondary" on:click={closeModal}>
-          {$_("profile.close")}
-        </button>
-      {:else}
-        <button
-          type="button"
-          class="btn btn-warning"
-          on:click={handleSendZap}
-          disabled={zapAmount <= 0}
-        >
-          {#if zapSending}
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            {$_("profile.sending")}
-          {:else}
-            {$_("profile.send_zap")}
-          {/if}
-        </button>
-      {/if}
-    </div>
+    {#snippet footer()}
+      <div class="w-100 text-center">
+        {#if zapSuccess}
+          <button type="button" class="btn btn-secondary" on:click={closeModal}>
+            {$_("profile.close")}
+          </button>
+        {:else}
+          <button
+            type="button"
+            class="btn btn-warning"
+            on:click={handleSendZap}
+            disabled={zapAmount <= 0}
+          >
+            {#if zapSending}
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {$_("profile.sending")}
+            {:else}
+              {$_("profile.send_zap")}
+            {/if}
+          </button>
+        {/if}
+      </div>
+    {/snippet}
   </Modal>
 
   <style>
