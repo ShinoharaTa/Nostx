@@ -36,10 +36,12 @@ input[type='radio'] {
 }
 
 // 黒背景でもキーボードフォーカスが見えるようにフォーカスリングを明示する
+// (.btn は Bootstrap が outline: 0 にするため明示的に上書きする)
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+.btn:focus-visible {
   outline: 2px solid #eee;
   outline-offset: 2px;
 }
