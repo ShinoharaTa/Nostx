@@ -69,6 +69,8 @@ export const getSingleItem = async (params: {
   kind?: number;
   note?: string;
   author?: string;
+  /** naddr(パラメータ化された置換可能イベント)の d タグ識別子 */
+  identifier?: string;
   relays?: string[];
 }) => {
   const filters: Filter = {};
@@ -80,6 +82,9 @@ export const getSingleItem = async (params: {
   }
   if (params.author) {
     filters.authors = [params.author];
+  }
+  if (params.identifier !== undefined) {
+    filters["#d"] = [params.identifier];
   }
   // タイムアウト付きで取得する(時間切れは例外を投げる)
   const lastData = await withTimeout(pool.get(mergeRelays(params.relays), filters));

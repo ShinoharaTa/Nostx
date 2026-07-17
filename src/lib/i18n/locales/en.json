@@ -1,5 +1,8 @@
 {
   "test": "test",
+  "clients": {
+    "apps": "Open in your app"
+  },
   "app": {
     "client_select": "Select apps",
     "last_used": "Last used app",
@@ -40,6 +43,11 @@
     "show_less": "Show less",
     "copied": "Copied!",
     "copy_failed": "Failed to copy"
+  },
+  "article": {
+    "badge": "Article",
+    "fetch_failed": "Failed to load the article",
+    "retry": "Retry"
   },
   "profile": {
     "fetch_failed": "Failed to load the profile",

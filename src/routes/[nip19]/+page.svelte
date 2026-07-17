@@ -5,6 +5,7 @@ import { clients } from "$lib/const";
 import { page } from "$app/state";
 import { parseQuery } from "$lib/nostr";
 import { getLastClientKey } from "$lib/preferences";
+import Article from "$lib/components/Article.svelte";
 import PostContent from "$lib/components/Content.svelte";
 import Profile from "$lib/components/Profile.svelte";
 import { _ } from "svelte-i18n";
@@ -70,8 +71,30 @@ let ogTitle = $state("Nostx");
 let ogDescription = $state(GENERIC_OGP_DESCRIPTION);
 let ogImage = $state(`${page.url.origin}/image/nostxlogo.svg`);
 
+// イベントのタグから最初の値を取り出す
+const getTagValue = (event: Event, name: string): string | undefined => {
+	const tag = event.tags.find((t) => t[0] === name && t[1]);
+	return tag?.[1];
+};
+
 const serverPicture = serverProfile?.picture;
-if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
+if (ogp && ogp.type === "naddr" && serverEvent) {
+	// 記事: og:title = title タグ、og:description = summary タグまたは content 先頭 150 字
+	const articleTitle = getTagValue(serverEvent, "title");
+	if (articleTitle) {
+		ogTitle = articleTitle;
+	}
+	const summary = getTagValue(serverEvent, "summary") ?? serverEvent.content;
+	if (summary) {
+		ogDescription = truncateForOgp(summary);
+	}
+	const articleImage = getTagValue(serverEvent, "image");
+	if (isHttpUrl(articleImage)) {
+		ogImage = articleImage;
+	} else if (isHttpUrl(serverPicture)) {
+		ogImage = serverPicture;
+	}
+} else if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
 	ogTitle = resolveDisplayName(ogp.profile.pubkey);
 	if (serverProfile?.about) {
 		ogDescription = truncateForOgp(serverProfile.about);
@@ -89,16 +112,22 @@ if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
 	}
 }
 
+// naddr のときは naddr 対応 URL を持つクライアントだけを表示対象にする
+const supportsCurrentType = (client: (typeof clients)[number]): boolean =>
+	nip19decode?.type !== "naddr" || Boolean(client.url.naddr);
 const appsClient = clients.find((client) => client.key === "apps");
 // 前回使ったアプリ(記録がなければ null)。大ボタンとして先頭に表示する
 const lastClient = $derived(
-	clients.find((client) => client.key === lastClientKey) ?? null,
+	clients.find(
+		(client) => client.key === lastClientKey && supportsCurrentType(client),
+	) ?? null,
 );
 // 大ボタン(前回使ったアプリ・モバイルの「アプリで開く」)に出したクライアントは一覧から除外する
 const listClients = $derived(
 	clients.filter(
 		(client) =>
-			client.key !== lastClientKey &&
+			supportsCurrentType(client) &&
+			client.key !== lastClient?.key &&
 			!(isMobile && client.key === "apps"),
 	),
 );
@@ -179,6 +208,15 @@ onMount(async () => {
                   relays={nip19decode.data.relays ?? []}
                   author={nip19decode.data.author}
                   kind={nip19decode.data.kind}
+                  initialEvent={serverEvent}
+                  initialMetadata={serverProfile}
+                />
+              {:else if nip19decode.type === "naddr"}
+                <Article
+                  kind={nip19decode.data.kind}
+                  pubkey={nip19decode.data.pubkey}
+                  identifier={nip19decode.data.identifier}
+                  relays={nip19decode.data.relays ?? []}
                   initialEvent={serverEvent}
                   initialMetadata={serverProfile}
                 />

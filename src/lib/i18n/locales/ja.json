@@ -1,5 +1,8 @@
 {
   "test": "テスト",
+  "clients": {
+    "apps": "アプリで開く"
+  },
   "app": {
     "client_select": "アプリを選択",
     "last_used": "前回使ったアプリ",
@@ -40,6 +43,11 @@
     "show_less": "折りたたむ",
     "copied": "コピーしました",
     "copy_failed": "コピーに失敗しました"
+  },
+  "article": {
+    "badge": "長文記事",
+    "fetch_failed": "記事の取得に失敗しました",
+    "retry": "再試行"
   },
   "profile": {
     "fetch_failed": "プロフィールの取得に失敗しました",
