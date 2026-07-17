@@ -7,8 +7,13 @@ import { parseQuery } from "$lib/nostr";
 import PostContent from "$lib/components/Content.svelte";
 import Profile from "$lib/components/Profile.svelte";
 import { _ } from "svelte-i18n";
+import type { Event } from "nostr-tools";
 import type { DecodeResult } from "nostr-tools/nip19";
+import { nip19 as nip19tools } from "nostr-tools";
 import { validateNip19Input } from "$lib/validation";
+import type { PageData } from "./$types";
+
+export let data: PageData;
 
 const key: string = page.params.nip19;
 const validation = validateNip19Input(key);
@@ -16,6 +21,71 @@ const validation = validateNip19Input(key);
 let nip19decode: DecodeResult | null;
 let process = true;
 let isMobile = false;
+
+// ---- サーバー(load)で取得済みの OGP 用データ ----
+const ogp = data.ogp;
+
+// kind:0 イベントの content をプロフィール情報として安全にパースする
+const parseMetadataContent = (
+	event: Event | null,
+): { [key: string]: string } | null => {
+	if (!event) return null;
+	try {
+		return JSON.parse(event.content);
+	} catch {
+		return null;
+	}
+};
+
+const serverEvent: Event | null = ogp?.event ?? null;
+const serverProfile = parseMetadataContent(ogp?.profile ?? null);
+
+// OGP の description 用に空白をたたんで先頭 150 字程度に丸める
+const truncateForOgp = (value: string, max = 150): string => {
+	const singleLine = value.replace(/\s+/g, " ").trim();
+	return singleLine.length > max ? `${singleLine.slice(0, max)}…` : singleLine;
+};
+
+// og:image に使える http(s) URL かどうか
+const isHttpUrl = (value: unknown): value is string =>
+	typeof value === "string" && /^https?:\/\//.test(value);
+
+// 表示名(display_name → name → 短縮 npub の順)
+const resolveDisplayName = (pubkey: string): string => {
+	if (serverProfile?.display_name) return serverProfile.display_name;
+	if (serverProfile?.name) return serverProfile.name;
+	try {
+		return `${nip19tools.npubEncode(pubkey).slice(0, 12)}...`;
+	} catch {
+		return "Nostr";
+	}
+};
+
+// ---- OGP メタタグの値を組み立てる(データなし時は汎用 OGP) ----
+const GENERIC_OGP_DESCRIPTION =
+	"Nostx is a redirect service that opens Nostr profiles and notes in your favorite Nostr apps.";
+let ogTitle = "Nostx";
+let ogDescription = GENERIC_OGP_DESCRIPTION;
+let ogImage = `${page.url.origin}/image/nostxlogo.svg`;
+
+const serverPicture = serverProfile?.picture;
+if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
+	ogTitle = resolveDisplayName(ogp.profile.pubkey);
+	if (serverProfile?.about) {
+		ogDescription = truncateForOgp(serverProfile.about);
+	}
+	if (isHttpUrl(serverPicture)) {
+		ogImage = serverPicture;
+	}
+} else if (ogp && (ogp.type === "note" || ogp.type === "nevent") && serverEvent) {
+	ogTitle = `${resolveDisplayName(serverEvent.pubkey)}の投稿`;
+	if (serverEvent.content) {
+		ogDescription = truncateForOgp(serverEvent.content);
+	}
+	if (isHttpUrl(serverPicture)) {
+		ogImage = serverPicture;
+	}
+}
 
 const appsClient = clients.find((client) => client.key === "apps");
 $: listClients = isMobile
@@ -36,6 +106,15 @@ onMount(async () => {
 	process = false;
 });
 </script>
+
+<svelte:head>
+  <meta property="og:title" content={ogTitle} />
+  <meta property="og:description" content={ogDescription} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:url" content={page.url.href} />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+</svelte:head>
 
 <div class="page">
   <div class="px-4 pt-3">
@@ -69,20 +148,27 @@ onMount(async () => {
           <div class="mt-4">
             {#if nip19decode}
               {#if nip19decode.type === "npub"}
-                <Profile id={nip19decode.data} />
+                <Profile id={nip19decode.data} initialMetadata={serverProfile} />
               {:else if nip19decode.type === "nprofile"}
                 <Profile
                   id={nip19decode.data.pubkey}
                   relays={nip19decode.data.relays ?? []}
+                  initialMetadata={serverProfile}
                 />
               {:else if nip19decode.type === "note"}
-                <PostContent id={nip19decode.data} />
+                <PostContent
+                  id={nip19decode.data}
+                  initialEvent={serverEvent}
+                  initialMetadata={serverProfile}
+                />
               {:else if nip19decode.type === "nevent"}
                 <PostContent
                   id={nip19decode.data.id}
                   relays={nip19decode.data.relays ?? []}
                   author={nip19decode.data.author}
                   kind={nip19decode.data.kind}
+                  initialEvent={serverEvent}
+                  initialMetadata={serverProfile}
                 />
               {/if}
             {/if}
