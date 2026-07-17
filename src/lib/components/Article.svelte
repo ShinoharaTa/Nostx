@@ -130,16 +130,16 @@ if (initialEvent) {
     </div>
     <h1 class="title mt-2 text-break">{title}</h1>
     {#if image}
-      <img src={image} alt="" class="article-image" loading="lazy" />
+      <img src={image} alt={$_("a11y.article_image")} class="article-image" loading="lazy" />
     {/if}
     {#if summary}
       <p class="summary mt-2 text-break">{summary}</p>
     {/if}
     <div class="d-flex align-items-center mt-3">
       {#if metadata && metadata.picture}
-        <img src={metadata.picture} alt="" class="picture" />
+        <img src={metadata.picture} alt={authorName} class="picture" />
       {:else}
-        <img src="/image/app_icon.svg" alt="" class="picture" />
+        <img src="/image/app_icon.svg" alt="" aria-hidden="true" class="picture" />
       {/if}
       <div class="text-break">
         <div>{authorName}</div>

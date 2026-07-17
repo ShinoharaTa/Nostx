@@ -162,7 +162,7 @@ onMount(async () => {
     <div class="d-grid">
       <div class="text-center">
         <a href="/">
-          <img src="/image/nostxlogo.svg" class="img-fluid w-25" alt="" />
+          <img src="/image/nostxlogo.svg" class="img-fluid w-25" alt="Nostx" />
         </a>
       </div>
       {#if process}
@@ -173,7 +173,7 @@ onMount(async () => {
         >
           <div class="d-flex align-items-center justify-content-center">
             <div class="bg-white error_icon">
-              <img src="/image/error_icon.jpg" alt="" class="img-fluid" />
+              <img src="/image/error_icon.jpg" alt="" aria-hidden="true" class="img-fluid" />
             </div>
           </div>
           <div class="mt-4">
@@ -254,7 +254,7 @@ onMount(async () => {
           >
             <div class="d-flex align-items-center justify-content-center">
               <div class="bg-white error_icon">
-                <img src="/image/error_icon.jpg" alt="" class="img-fluid" />
+                <img src="/image/error_icon.jpg" alt="" aria-hidden="true" class="img-fluid" />
               </div>
             </div>
             <div class="mt-4">

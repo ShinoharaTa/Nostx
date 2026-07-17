@@ -64,5 +64,12 @@
     "cancel": "キャンセル",
     "send_zap": "ZAPを送信",
     "sending": "送信中..."
+  },
+  "a11y": {
+    "profile_qr": "このプロフィール(npub)を示すQRコード",
+    "invoice_qr": "Lightningインボイス支払い用のQRコード",
+    "generated_qr": "生成されたQRコード",
+    "post_image": "投稿に添付された画像",
+    "article_image": "記事のアイキャッチ画像"
   }
 }

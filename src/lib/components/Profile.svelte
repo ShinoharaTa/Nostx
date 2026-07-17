@@ -146,7 +146,11 @@ const shareToNpub = () => {
 {:else}
   <div class="item">
     <div class="d-flex mt-2">
-      <img src={metadata.picture} alt="" class="picture" />
+      <img
+        src={metadata.picture}
+        alt={metadata.display_name || metadata.name || shortNpub}
+        class="picture"
+      />
       <div>
         <div class="text-break">
           {metadata.display_name || metadata.name || shortNpub}
@@ -179,7 +183,7 @@ const shareToNpub = () => {
     {/if}
     {#if qrString}
       <div class="mt-4 text-center">
-        <img src={qrString} alt="" class="w-50 qr_background">
+        <img src={qrString} alt={$_("a11y.profile_qr")} class="w-50 qr_background">
       </div>
     {/if}
     <div class="mt-3 d-flex gap-2 justify-content-center">

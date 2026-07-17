@@ -71,7 +71,7 @@ const copyInvoice = () => {
     {#if zapSuccess}
       {#if invoiceUrl}
       <div class="mt-4 text-center">
-        <img src={invoiceUrl} class="w-75 qr_background" alt="" />
+        <img src={invoiceUrl} class="w-75 qr_background" alt={$_("a11y.invoice_qr")} />
       </div>
       <div class="mt-3 text-center">
         <i class="bi bi-copy"></i> {$_("profile.tap_to_copy")}

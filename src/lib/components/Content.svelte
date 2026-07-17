@@ -210,9 +210,13 @@ if (initialEvent) {
     {#if text.kind === 1}
       <div class="d-flex">
         {#if metadata && metadata.picture}
-        <img src={metadata.picture} alt="" class="picture" />
+        <img
+          src={metadata.picture}
+          alt={metadata.display_name || metadata.name || shortNpub}
+          class="picture"
+        />
         {:else}
-        <img src="/image/app_icon.svg" alt="" class="picture" />
+        <img src="/image/app_icon.svg" alt="" aria-hidden="true" class="picture" />
         {/if}
         <p class="text-break">
           {#if metadata}
@@ -230,7 +234,7 @@ if (initialEvent) {
     <div class="mt-3 text-break">
       {#each displayTokens as token}
         {#if token.type === "image"}
-          <img src={token.url} alt="" class="content-image" loading="lazy" />
+          <img src={token.url} alt={$_("a11y.post_image")} class="content-image" loading="lazy" />
         {:else if token.type === "link"}
           <a href={token.url} target="_blank" rel="noopener noreferrer">{token.url}</a>
         {:else if token.type === "nostr"}

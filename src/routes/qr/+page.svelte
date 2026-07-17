@@ -72,7 +72,7 @@ const share = async () => {
   <div class="px-4 pt-5">
     <div class="">
       <div class="text-center">
-        <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="" />
+        <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="Nostx" />
       </div>
     </div>
     <!-- <div class="mt-4" id="generatedQR"></div> -->
@@ -81,7 +81,7 @@ const share = async () => {
     </div>
     {#if url}
       <div class="mt-4">
-        <img src={url} class="img-fluid w-75" alt="" />
+        <img src={url} class="img-fluid w-75" alt={$_("a11y.generated_qr")} />
       </div>
       <div class="mt-3">
         <a class="btn btn-outline-light mx-1" href={url} download="nostx-qr.png">
@@ -97,7 +97,7 @@ const share = async () => {
       </div>
     {:else}
       <div class="mt-4">
-        <img src="/image/notimage.png" class="img-fluid w-75" alt="" />
+        <img src="/image/notimage.png" class="img-fluid w-75" alt="" aria-hidden="true" />
       </div>
     {/if}
     <div class="text-center mt-5">
