@@ -28,11 +28,12 @@ const shortNpub = $derived(npub ? `${npub.slice(0, 12)}...` : "");
 // プロフィール取得後の付随処理(npub表示・QRコード生成・NIP-05検証)
 const applyMetadataExtras = async () => {
 	npub = nip19.npubEncode(id);
+	// 読み取り性優先: 白背景に濃色モジュールのシンプルなQRにする
 	const opts = {
 		quality: 0.3,
 		color: {
-			dark: "#fff",
-			light: "#0000",
+			dark: "#101010",
+			light: "#ffffff",
 		},
 	};
 	QRCode.toDataURL(`nostr:${npub}`, opts)
@@ -146,7 +147,11 @@ const shareToNpub = () => {
 {:else}
   <div class="item">
     <div class="d-flex mt-2">
-      <img src={metadata.picture} alt="" class="picture" />
+      <img
+        src={metadata.picture}
+        alt={metadata.display_name || metadata.name || shortNpub}
+        class="picture"
+      />
       <div>
         <div class="text-break">
           {metadata.display_name || metadata.name || shortNpub}
@@ -162,36 +167,39 @@ const shareToNpub = () => {
       {metadata.about}
     </div>
     {#if metadata.website}
-      <div class="mt-2">
+      <div class="mt-2 text-break">
         <strong>WEB SITE: </strong>
         <a href={metadata.website} target="_blank" rel="noopener noreferrer">{metadata.website}</a>
       </div>
     {/if}
     {#if metadata.nip05}
-      <div class="mt-2">
+      <div class="mt-2 text-break">
         <strong>NIP-05:</strong> {metadata.nip05} {nip05Verify}
       </div>
     {/if}
     {#if metadata.lud16}
-      <div class="mt-2">
+      <div class="mt-2 text-break">
         <strong>LUD16:</strong> {metadata.lud16}
       </div>
     {/if}
     {#if qrString}
       <div class="mt-4 text-center">
-        <img src={qrString} alt="" class="w-50 qr_background">
+        <img src={qrString} alt={$_("a11y.profile_qr")} class="w-50 qr_background">
       </div>
     {/if}
     <div class="mt-3 d-flex gap-2 justify-content-center">
       <div class="position-relative">
         <button
           class="btn btn-sm btn-circle btn-light"
+          aria-label={$_("a11y.copy")}
+          aria-haspopup="menu"
+          aria-expanded={copyMenuOpen}
           onclick={(event) => {
             event.stopPropagation();
             copyMenuOpen = !copyMenuOpen;
           }}
         >
-          <i class="bi bi-copy"></i> COPY
+          <i class="bi bi-copy" aria-hidden="true"></i> COPY
         </button>
         {#if copyMenuOpen}
           <div class="copy-menu">
@@ -202,13 +210,23 @@ const shareToNpub = () => {
         {/if}
       </div>
       <div>
-        <button class="btn btn-sm btn-circle btn-light" disabled={!navigator.share} onclick={shareToNpub}>
-          <i class="bi bi-share-fill"></i> SHARE
+        <button
+          class="btn btn-sm btn-circle btn-light"
+          aria-label={$_("qr.share")}
+          disabled={!navigator.share}
+          onclick={shareToNpub}
+        >
+          <i class="bi bi-share-fill" aria-hidden="true"></i> SHARE
         </button>
       </div>
       <div>
-        <button class="btn btn-sm btn-circle btn-warning" disabled={!metadata.lud16} onclick={sendZapHandle}>
-          <i class="bi bi-lightning-charge-fill"></i> ZAP
+        <button
+          class="btn btn-sm btn-circle btn-warning"
+          aria-label={$_("profile.send_zap")}
+          disabled={!metadata.lud16}
+          onclick={sendZapHandle}
+        >
+          <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i> ZAP
         </button>
       </div>
     </div>
@@ -218,7 +236,13 @@ const shareToNpub = () => {
   {/if}
 {/if}
 
-<svelte:window onclick={() => (copyMenuOpen = false)} />
+<svelte:window
+  onclick={() => (copyMenuOpen = false)}
+  onkeydown={(event) => {
+    // Esc でコピーメニューを閉じる(キーボード操作対応)
+    if (event.key === "Escape") copyMenuOpen = false;
+  }}
+/>
 
 <style>
   .picture {
@@ -282,7 +306,8 @@ const shareToNpub = () => {
     font-size: 13px;
   }
 
-  .copy-menu-item:hover {
+  .copy-menu-item:hover,
+  .copy-menu-item:focus-visible {
     background: #444;
   }
 
@@ -291,11 +316,8 @@ const shareToNpub = () => {
   }
 
   .qr_background {
-    background: linear-gradient(
-      135deg,
-      #5a3e8b 5%,
-      #b75fa2 50%,
-      #ff914d 95%
-    );
+    background: #fff;
+    padding: 0.5rem;
+    border-radius: 8px;
   }
 </style>

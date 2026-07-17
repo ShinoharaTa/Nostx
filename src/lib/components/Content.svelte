@@ -210,9 +210,13 @@ if (initialEvent) {
     {#if text.kind === 1}
       <div class="d-flex">
         {#if metadata && metadata.picture}
-        <img src={metadata.picture} alt="" class="picture" />
+        <img
+          src={metadata.picture}
+          alt={metadata.display_name || metadata.name || shortNpub}
+          class="picture"
+        />
         {:else}
-        <img src="/image/app_icon.svg" alt="" class="picture" />
+        <img src="/image/app_icon.svg" alt="" aria-hidden="true" class="picture" />
         {/if}
         <p class="text-break">
           {#if metadata}
@@ -230,7 +234,7 @@ if (initialEvent) {
     <div class="mt-3 text-break">
       {#each displayTokens as token}
         {#if token.type === "image"}
-          <img src={token.url} alt="" class="content-image" loading="lazy" />
+          <img src={token.url} alt={$_("a11y.post_image")} class="content-image" loading="lazy" />
         {:else if token.type === "link"}
           <a href={token.url} target="_blank" rel="noopener noreferrer">{token.url}</a>
         {:else if token.type === "nostr"}
@@ -257,12 +261,15 @@ if (initialEvent) {
       <div class="position-relative">
         <button
           class="btn btn-sm btn-circle btn-light"
+          aria-label={$_("a11y.copy")}
+          aria-haspopup="menu"
+          aria-expanded={copyMenuOpen}
           onclick={(event) => {
             event.stopPropagation();
             copyMenuOpen = !copyMenuOpen;
           }}
         >
-          <i class="bi bi-copy"></i> COPY
+          <i class="bi bi-copy" aria-hidden="true"></i> COPY
         </button>
         {#if copyMenuOpen}
           <div class="copy-menu">
@@ -276,7 +283,13 @@ if (initialEvent) {
   </div>
 {/if}
 
-<svelte:window onclick={() => (copyMenuOpen = false)} />
+<svelte:window
+  onclick={() => (copyMenuOpen = false)}
+  onkeydown={(event) => {
+    // Esc でコピーメニューを閉じる(キーボード操作対応)
+    if (event.key === "Escape") copyMenuOpen = false;
+  }}
+/>
 
 <style>
   .picture {
@@ -350,7 +363,8 @@ if (initialEvent) {
     font-size: 13px;
   }
 
-  .copy-menu-item:hover {
+  .copy-menu-item:hover,
+  .copy-menu-item:focus-visible {
     background: #444;
   }
 </style>

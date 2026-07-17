@@ -75,7 +75,7 @@ const displayName = $derived(
       onclick={rememberClient}
     >
       <div class="bg-white app_icon">
-        <img src={client.imgsrc} alt="" class="img-fluid" />
+        <img src={client.imgsrc} alt={client.name} class="img-fluid" />
       </div>
       <div class="primary_text ms-2">{displayName}</div>
     </a>
@@ -85,7 +85,7 @@ const displayName = $derived(
     <a class="item mt-2 text-center" href="{linkUrl()}" onclick={rememberClient}>
       <div class="d-flex justify-content-center">
         <div class="bg-white app_icon">
-          <img src={client.imgsrc} alt="" class="img-fluid" />
+          <img src={client.imgsrc} alt={client.name} class="img-fluid" />
         </div>
       </div>
       <div class="app_text mt-1">{displayName}</div>

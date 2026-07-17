@@ -3,8 +3,17 @@ import "$lib/styles/style.scss";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Footer from "$lib/components/Footer.svelte";
 import { page } from "$app/state";
+import { browser } from "$app/environment";
+import { locale } from "svelte-i18n";
 
 let { children } = $props();
+
+// 表示言語と html の lang 属性を整合させる(app.html は静的なため実行時に同期する)
+$effect(() => {
+	if (browser && $locale) {
+		document.documentElement.lang = $locale.startsWith("ja") ? "ja" : "en";
+	}
+});
 </script>
 
 <svelte:head>

@@ -26,11 +26,12 @@ async function handleSendZap() {
 		if (result.success) {
 			zapSuccess = true;
 			invoice = result.invoice;
+			// 読み取り性優先: 白背景に濃色モジュールのシンプルなQRにする
 			const opts = {
 				quality: 0.3,
 				color: {
-					dark: "#fff",
-					light: "#0000",
+					dark: "#101010",
+					light: "#ffffff",
 				},
 			};
 			QRCode.toDataURL(`lightning:${result.invoice}`, opts)
@@ -71,7 +72,7 @@ const copyInvoice = () => {
     {#if zapSuccess}
       {#if invoiceUrl}
       <div class="mt-4 text-center">
-        <img src={invoiceUrl} class="w-75 qr_background" alt="" />
+        <img src={invoiceUrl} class="w-75 qr_background" alt={$_("a11y.invoice_qr")} />
       </div>
       <div class="mt-3 text-center">
         <i class="bi bi-copy"></i> {$_("profile.tap_to_copy")}
@@ -138,11 +139,8 @@ const copyInvoice = () => {
 
   <style>
     .qr_background {
-  background: linear-gradient(
-    135deg,
-    hsl(45, 100%, 25%) 0%,   /* ダークなイエロー */
-    hsl(45, 100%, 35%) 50%,   /* 中央：少し明るいが全体としてはダークなイエロー */
-    hsl(45, 100%, 25%) 100%   /* ダークなイエロー */
-  );
-}
+      background: #fff;
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
   </style>
