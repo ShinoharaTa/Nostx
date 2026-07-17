@@ -9,10 +9,42 @@
   "single": {
     "error": "URL を確認して下さい"
   },
+  "validation": {
+    "nsec_warning": "秘密鍵(nsec)は入力しないでください。秘密鍵は他人やサービスに渡さず、安全に保管してください",
+    "unsupported": "この形式は未対応です",
+    "invalid": "NIP-19形式として認識できません"
+  },
+  "top": {
+    "catchphrase": "Nostrの世界をシームレスに",
+    "feature_title": "NIP19簡単変換&連携",
+    "feature_description": "このアプリNostxは、Nostrで使われるコード（NIP19形式）を読み取って、あなたが普段使っているアプリやWebサービスで使えるURLに変換するツールです。Nostrの情報を簡単に共有したり活用したりできるようサポートします",
+    "open_button": "npubやneventを開く",
+    "paste": "貼り付け",
+    "paste_failed": "クリップボードを読み取れませんでした",
+    "qr_title": "QRコードで共有しよう",
+    "qr_description": "https://nostx.io/... の形式に変換して、簡単に共有できるQRコードを生成します"
+  },
   "qr": {
-    "make": "QRコードを作る"
+    "make": "QRコードを作る",
+    "description": "Nostrのnpub1, nprofile1, nevent1 ... を入力すると、\"{origin}/npub...\" 形式のQRコードを生成します",
+    "generate": "QRコードを生成する",
+    "back_home": "ホームへ戻る",
+    "download": "PNGをダウンロード",
+    "share": "共有する"
+  },
+  "content": {
+    "fetch_failed": "投稿の取得に失敗しました",
+    "retry": "再試行",
+    "show_more": "もっと見る",
+    "show_less": "折りたたむ",
+    "copied": "コピーしました",
+    "copy_failed": "コピーに失敗しました"
   },
   "profile": {
+    "fetch_failed": "プロフィールの取得に失敗しました",
+    "retry": "再試行",
+    "copied": "コピーしました",
+    "copy_failed": "コピーに失敗しました",
     "zap": "ZAP",
     "zap_amount": "金額 (sats)",
     "zap_comment": "コメント",

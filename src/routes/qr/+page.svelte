@@ -1,18 +1,70 @@
 <script lang="ts">
 // @ts-ignore
 import QRCode from "qrcode";
+import { validateNip19Input } from "$lib/validation";
+import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 
 let nip19 = "";
 let url = "";
+let shareUrl = "";
+let errorKey: string | null = null;
+let origin = "https://nostx.io";
+let canShare = false;
+
+onMount(() => {
+	origin = location.origin;
+	canShare = !!navigator.share;
+});
+
 const generate = () => {
-	if (nip19 === "") return;
-	QRCode.toDataURL(`https://nostx.io/${nip19}`)
+	const result = validateNip19Input(nip19);
+	if (result.status !== "ok") {
+		url = "";
+		shareUrl = "";
+		switch (result.status) {
+			case "nsec-warning":
+				errorKey = "validation.nsec_warning";
+				break;
+			case "unsupported":
+				errorKey = "validation.unsupported";
+				break;
+			default:
+				errorKey = "validation.invalid";
+				break;
+		}
+		return;
+	}
+	errorKey = null;
+	const target = `${location.origin}/${nip19.trim()}`;
+	QRCode.toDataURL(target)
 		.then((result: string) => {
 			url = result;
+			shareUrl = target;
 		})
-		.catch((err: string) => {
+		.catch(() => {
 			url = "";
+			shareUrl = "";
 		});
+};
+
+const share = async () => {
+	if (!shareUrl) return;
+	let data: ShareData = { url: shareUrl };
+	try {
+		const blob = await (await fetch(url)).blob();
+		const file = new File([blob], "nostx-qr.png", { type: "image/png" });
+		if (navigator.canShare?.({ files: [file] })) {
+			data = { files: [file] };
+		}
+	} catch {
+		// PNG の変換に失敗した場合は URL のみ共有する
+	}
+	try {
+		await navigator.share(data);
+	} catch {
+		// ユーザーによるキャンセル等は無視する
+	}
 };
 </script>
 
@@ -25,13 +77,23 @@ const generate = () => {
     </div>
     <!-- <div class="mt-4" id="generatedQR"></div> -->
     <div class="mt-4 card py-3 bg-dark">
-      Nostrのnpub1, nprofile1, nevent1 ... 入力すると<br />
-      "https://nostx.io/npub..."の <br />
-      形式のQRコードを生成します
+      {$_("qr.description", { values: { origin } })}
     </div>
     {#if url}
       <div class="mt-4">
         <img src={url} class="img-fluid w-75" alt="" />
+      </div>
+      <div class="mt-3">
+        <a class="btn btn-outline-light mx-1" href={url} download="nostx-qr.png">
+          <i class="bi bi-download"></i>
+          {$_("qr.download")}
+        </a>
+        {#if canShare}
+          <button class="btn btn-outline-light mx-1" on:click={share} type="button">
+            <i class="bi bi-share"></i>
+            {$_("qr.share")}
+          </button>
+        {/if}
       </div>
     {:else}
       <div class="mt-4">
@@ -45,22 +107,25 @@ const generate = () => {
         placeholder="npub1, nprofile1, note1, nevent1..."
         rows="3"
       ></textarea>
+      {#if errorKey}
+        <div class="text-danger mt-2">{$_(errorKey)}</div>
+      {/if}
       <div class="mt-3">
         <button class="btn btn-lg bg-brand px-4" on:click={generate}>
-          QRコードを生成する
+          {$_("qr.generate")}
         </button>
       </div>
     </div>
     <div class="mt-4">
-      <a href="/" class=""> «　ホームへ戻る </a>
+      <a href="/" class=""> « {$_("qr.back_home")} </a>
     </div>
   </div>
 </div>
 
 <style>
   .card {
-    /* color: #444;
-    background: #f2f2f2; */
+    /* Bootstrap の .card は文字色が背景 (bg-dark) と同化するため明示する */
+    color: #eee;
     font-size: 0.9rem;
     font-family: initial;
   }

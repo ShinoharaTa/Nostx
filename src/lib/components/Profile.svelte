@@ -9,17 +9,29 @@ import { _ } from "svelte-i18n";
 import { queryProfile, type Nip05 } from "nostr-tools/nip05";
 
 export let id: string;
-let metadata: { [key: string]: string } | null | "failed" = null;
+export let relays: string[] = [];
+let metadata: { [key: string]: string } | null = null;
+let status: "loading" | "loaded" | "failed" = "loading";
 let qrString = "";
 let npub = "";
 let nip05Verify= "";
+
+$: shortNpub = npub ? `${npub.slice(0, 12)}...` : "";
 const getItem = async () => {
-	const data = await getSingleItem({ kind: 0, author: id });
-	if (!data) {
-		metadata = "failed";
+	status = "loading";
+	try {
+		const data = await getSingleItem({ kind: 0, author: id, relays });
+		if (!data) {
+			status = "failed";
+			return;
+		}
+		metadata = JSON.parse(data.content);
+	} catch {
+		// タイムアウトを含む取得失敗
+		status = "failed";
 		return;
 	}
-	metadata = JSON.parse(data.content);
+	status = "loaded";
 	npub = nip19.npubEncode(id);
 	const opts = {
 		quality: 0.3,
@@ -32,12 +44,18 @@ const getItem = async () => {
 		.then((result: string) => {
 			qrString = result;
 		})
-		.catch((err: string) => {
+		.catch(() => {
 			qrString = "";
 		});
-	if (!metadata || metadata === "failed") return;
-	const result = await queryProfile(metadata.nip05);
-	nip05Verify = result ? "✅️" : "";
+	if (!metadata) return;
+	if (metadata.nip05) {
+		try {
+			const result = await queryProfile(metadata.nip05);
+			nip05Verify = result ? "✅️" : "";
+		} catch {
+			nip05Verify = "";
+		}
+	}
 };
 getItem();
 
@@ -45,20 +63,39 @@ const sendZapHandle = () => {
 	openModal();
 };
 
-const copyToNpub = () => {
+let copyMenuOpen = false;
+
+// 指定した形式でクリップボードにコピーする
+const copyAs = (copyFormat: "npub" | "nprofile" | "hex") => {
+	copyMenuOpen = false;
+	let value = "";
+	try {
+		if (copyFormat === "npub") {
+			value = nip19.npubEncode(id);
+		} else if (copyFormat === "nprofile") {
+			// 取得済みのリレーヒントがあれば含める
+			value = nip19.nprofileEncode(
+				relays.length > 0 ? { pubkey: id, relays } : { pubkey: id },
+			);
+		} else {
+			value = id;
+		}
+	} catch {
+		alert($_("profile.copy_failed"));
+		return;
+	}
 	navigator.clipboard
-		.writeText(npub)
+		.writeText(value)
 		.then(() => {
 			alert($_("profile.copied"));
 		})
-		.catch((error) => {
+		.catch(() => {
 			alert($_("profile.copy_failed"));
 		});
 };
 
 const shareToNpub = () => {
-	if (!metadata || metadata === "failed") return;
-	const name = metadata.display_name ?? metadata.name;
+	if (!metadata) return;
 	navigator
 		.share({
 			url: window.location.href,
@@ -68,21 +105,38 @@ const shareToNpub = () => {
 };
 </script>
 
-{#if !metadata}
-  loading
-{:else if metadata === "failed"}
-  取得に失敗しました
+{#if status === "loading"}
+  <div class="item" aria-busy="true">
+    <div class="d-flex mt-2 align-items-center">
+      <div class="skeleton skeleton-avatar"></div>
+      <div class="flex-grow-1">
+        <div class="skeleton skeleton-line w-50"></div>
+        <div class="skeleton skeleton-line w-25 mt-2"></div>
+      </div>
+    </div>
+    <div class="skeleton skeleton-line mt-3"></div>
+    <div class="skeleton skeleton-line mt-2 w-75"></div>
+  </div>
+{:else if status === "failed" || !metadata}
+  <div class="item text-center">
+    <div>{$_("profile.fetch_failed")}</div>
+    <button class="btn btn-sm btn-outline-light mt-3" on:click={getItem}>
+      <i class="bi bi-arrow-clockwise"></i> {$_("profile.retry")}
+    </button>
+  </div>
 {:else}
   <div class="item">
     <div class="d-flex mt-2">
       <img src={metadata.picture} alt="" class="picture" />
       <div>
         <div class="text-break">
-          {metadata.display_name}
+          {metadata.display_name || metadata.name || shortNpub}
         </div>
+        {#if metadata.name}
         <div class="text-break">
           @{metadata.name}
         </div>
+        {/if}
       </div>
     </div>
     <div class="mt-3 about text-break">
@@ -110,10 +164,20 @@ const shareToNpub = () => {
       </div>
     {/if}
     <div class="mt-3 d-flex gap-2 justify-content-center">
-      <div>
-        <button class="btn btn-sm btn-circle btn-light" on:click={copyToNpub}>
+      <div class="position-relative">
+        <button
+          class="btn btn-sm btn-circle btn-light"
+          on:click|stopPropagation={() => (copyMenuOpen = !copyMenuOpen)}
+        >
           <i class="bi bi-copy"></i> COPY
         </button>
+        {#if copyMenuOpen}
+          <div class="copy-menu">
+            <button class="copy-menu-item" on:click={() => copyAs("npub")}>npub</button>
+            <button class="copy-menu-item" on:click={() => copyAs("nprofile")}>nprofile</button>
+            <button class="copy-menu-item" on:click={() => copyAs("hex")}>hex</button>
+          </div>
+        {/if}
       </div>
       <div>
         <button class="btn btn-sm btn-circle btn-light" disabled={!navigator.share} on:click={shareToNpub}>
@@ -131,6 +195,8 @@ const shareToNpub = () => {
   <ZapModal lud16={metadata.lud16}></ZapModal>
   {/if}
 {/if}
+
+<svelte:window on:click={() => (copyMenuOpen = false)} />
 
 <style>
   .picture {
@@ -151,6 +217,51 @@ const shareToNpub = () => {
 
   .btn-circle {
     border-radius: 20px;
+  }
+
+  .skeleton {
+    background: #333;
+    border-radius: 4px;
+  }
+
+  .skeleton-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+
+  .skeleton-line {
+    height: 0.9rem;
+  }
+
+  .copy-menu {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    min-width: 6.5rem;
+  }
+
+  .copy-menu-item {
+    display: block;
+    width: 100%;
+    padding: 0.4rem 1rem;
+    background: none;
+    border: none;
+    color: #eee;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .copy-menu-item:hover {
+    background: #444;
   }
 
   .about {

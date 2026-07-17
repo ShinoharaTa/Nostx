@@ -9,7 +9,6 @@ export type Client = {
     nevent?: string,
   }
   nip05: boolean,
-  smartphone: boolean,
 }
 
 export const clients: Client[] = [
@@ -24,7 +23,6 @@ export const clients: Client[] = [
       nevent: 'nostr:',
     },
     nip05: false,
-    smartphone: false,
   },
   {
     key: "primal",
@@ -37,7 +35,6 @@ export const clients: Client[] = [
       nevent: 'https://primal.net/e/',
     },
     nip05: true,
-    smartphone: false,
   },
   {
     key: "coracle",
@@ -50,7 +47,6 @@ export const clients: Client[] = [
       nevent: 'https://coracle.social/',
     },
     nip05: false,
-    smartphone: false,
   },
   {
     key: "iris",
@@ -63,7 +59,6 @@ export const clients: Client[] = [
       nevent: "https://iris.to/",
     },
     nip05: true,
-    smartphone: false,
   },
   {
     key: "snort",
@@ -76,7 +71,6 @@ export const clients: Client[] = [
       nevent: 'https://snort.social/',
     },
     nip05: false,
-    smartphone: false,
   },
   {
     key: "nostter",
@@ -89,7 +83,6 @@ export const clients: Client[] = [
       nevent: 'https://nostter.app/',
     },
     nip05: false,
-    smartphone: false,
   },
   {
     key: "lumilumi",
@@ -102,7 +95,6 @@ export const clients: Client[] = [
       nevent: 'https://lumilumi.app/',
     },
     nip05: false,
-    smartphone: false,
   },
 
 ]

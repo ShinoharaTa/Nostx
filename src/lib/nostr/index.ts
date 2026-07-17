@@ -33,19 +33,56 @@ const relays = [
   "wss://r.kojira.io",
 ];
 
+// 取得タイムアウト(ミリ秒)
+const FETCH_TIMEOUT_MS = 10000;
+
+// Promiseにタイムアウトを付与する(時間切れでrejectする)
+const withTimeout = <T>(
+  promise: Promise<T>,
+  ms: number = FETCH_TIMEOUT_MS,
+): Promise<T> => {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("fetch timeout")), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+};
+
+// リレーヒントを固定リレーリストとマージする(重複は除去)
+const mergeRelays = (hints?: string[]): string[] => {
+  if (!hints || hints.length === 0) return relays;
+  const valid = hints.filter(
+    (url) => url.startsWith("wss://") || url.startsWith("ws://"),
+  );
+  return Array.from(new Set([...relays, ...valid]));
+};
+
 export const getSingleItem = async (params: {
-  kind: number;
+  kind?: number;
   note?: string;
   author?: string;
+  relays?: string[];
 }) => {
-  const filters: Filter = { kinds: [params.kind] };
+  const filters: Filter = {};
+  if (params.kind !== undefined) {
+    filters.kinds = [params.kind];
+  }
   if (params.note) {
     filters.ids = [params.note];
   }
   if (params.author) {
     filters.authors = [params.author];
   }
-  const lastData = await pool.get(relays, filters);
+  // タイムアウト付きで取得する(時間切れは例外を投げる)
+  const lastData = await withTimeout(pool.get(mergeRelays(params.relays), filters));
   return lastData;
 };
 
@@ -84,6 +121,6 @@ export const sendZap = async (address: string, amount: number, comment: string) 
     return { success: true, message: "invoiceCreated", invoice: data.pr };
   } catch (error) {
     console.error('インボイス生成エラー:', error);
-    return { success: false, message: "failed", invoide: null };
+    return { success: false, message: "failed", invoice: null };
   }
 };
