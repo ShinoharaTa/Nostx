@@ -2,6 +2,7 @@
   "test": "テスト",
   "app": {
     "client_select": "アプリを選択",
+    "last_used": "前回使ったアプリ",
     "default_select": "常にこのアプリを使用する",
     "save": "設定を保存",
     "open_nostr": "Nostr で開く"

@@ -4,6 +4,7 @@ import Application from "$lib/components/Application.svelte";
 import { clients } from "$lib/const";
 import { page } from "$app/state";
 import { parseQuery } from "$lib/nostr";
+import { getLastClientKey } from "$lib/preferences";
 import PostContent from "$lib/components/Content.svelte";
 import Profile from "$lib/components/Profile.svelte";
 import { _ } from "svelte-i18n";
@@ -21,6 +22,7 @@ const validation = validateNip19Input(key);
 let nip19decode = $state<DecodeResult | null>();
 let process = $state(true);
 let isMobile = $state(false);
+let lastClientKey = $state<string | null>(null);
 
 // ---- サーバー(load)で取得済みの OGP 用データ ----
 const ogp = data.ogp;
@@ -88,14 +90,24 @@ if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
 }
 
 const appsClient = clients.find((client) => client.key === "apps");
+// 前回使ったアプリ(記録がなければ null)。大ボタンとして先頭に表示する
+const lastClient = $derived(
+	clients.find((client) => client.key === lastClientKey) ?? null,
+);
+// 大ボタン(前回使ったアプリ・モバイルの「アプリで開く」)に出したクライアントは一覧から除外する
 const listClients = $derived(
-	isMobile ? clients.filter((client) => client.key !== "apps") : clients,
+	clients.filter(
+		(client) =>
+			client.key !== lastClientKey &&
+			!(isMobile && client.key === "apps"),
+	),
 );
 
 onMount(async () => {
 	isMobile =
 		window.innerWidth < 768 ||
 		/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+	lastClientKey = getLastClientKey();
 	if (validation.status === "nsec-warning" || validation.status === "unsupported") {
 		// 秘密鍵や未対応形式はクライアントへ渡さない
 		nip19decode = null;
@@ -173,7 +185,17 @@ onMount(async () => {
               {/if}
             {/if}
           </div>
-          {#if isMobile && appsClient}
+          {#if lastClient}
+            <div class="mt-3 text-center">{$_("app.last_used")}</div>
+            <div class="row g-2">
+              <Application
+                client={lastClient}
+                result={nip19decode}
+                variant="primary"
+              />
+            </div>
+          {/if}
+          {#if isMobile && appsClient && appsClient.key !== lastClientKey}
             <div class="row g-2 mt-2">
               <Application
                 client={appsClient}
