@@ -5,17 +5,26 @@ import { nip19 } from "nostr-tools";
 import type { Event } from "nostr-tools";
 import { _ } from "svelte-i18n";
 
-export let id: string;
-export let relays: string[] = [];
-export let author: string | undefined = undefined;
-export let kind: number | undefined = undefined;
-// サーバー(+page.server.ts)で取得済みの初期データ(あればクライアント再取得をスキップする)
-export let initialEvent: Event | null = null;
-export let initialMetadata: { [key: string]: string } | null = null;
-let text: Event | null = null;
-let metadata: { [key: string]: string } | null = null;
-let status: "loading" | "loaded" | "failed" = "loading";
-let expanded = false;
+let {
+	id,
+	relays = [],
+	author = undefined,
+	kind = undefined,
+	// サーバー(+page.server.ts)で取得済みの初期データ(あればクライアント再取得をスキップする)
+	initialEvent = null,
+	initialMetadata = null,
+}: {
+	id: string;
+	relays?: string[];
+	author?: string | undefined;
+	kind?: number | undefined;
+	initialEvent?: Event | null;
+	initialMetadata?: { [key: string]: string } | null;
+} = $props();
+let text = $state<Event | null>(null);
+let metadata = $state<{ [key: string]: string } | null>(null);
+let status = $state<"loading" | "loaded" | "failed">("loading");
+let expanded = $state(false);
 
 // contentをリッチ表示するためのトークン({@html}を使わずに要素を組み立てる)
 type Token =
@@ -91,7 +100,7 @@ const truncateTokens = (tokens: Token[], limit: number): Token[] => {
 	return result;
 };
 
-let copyMenuOpen = false;
+let copyMenuOpen = $state(false);
 
 // 指定した形式でクリップボードにコピーする
 const copyAs = (copyFormat: "note" | "nevent" | "hex") => {
@@ -125,11 +134,16 @@ const copyAs = (copyFormat: "note" | "nevent" | "hex") => {
 		});
 };
 
-$: shortNpub = text ? `${nip19.npubEncode(text.pubkey).slice(0, 12)}...` : "";
-$: tokens = text ? tokenize(text.content) : [];
-$: isLong = text ? text.content.length > CONTENT_COLLAPSE_LIMIT : false;
-$: displayTokens =
-	isLong && !expanded ? truncateTokens(tokens, CONTENT_COLLAPSE_LIMIT) : tokens;
+const shortNpub = $derived(
+	text ? `${nip19.npubEncode(text.pubkey).slice(0, 12)}...` : "",
+);
+const tokens = $derived(text ? tokenize(text.content) : []);
+const isLong = $derived(
+	text ? text.content.length > CONTENT_COLLAPSE_LIMIT : false,
+);
+const displayTokens = $derived(
+	isLong && !expanded ? truncateTokens(tokens, CONTENT_COLLAPSE_LIMIT) : tokens,
+);
 // 投稿者のプロフィール(kind:0)を取得する(失敗しても本文表示には影響させない)
 const getAuthorMetadata = async (pubkey: string) => {
 	try {
@@ -187,7 +201,7 @@ if (initialEvent) {
 {:else if status === "failed"}
   <div class="item text-center">
     <div>{$_("content.fetch_failed")}</div>
-    <button class="btn btn-sm btn-outline-light mt-3" on:click={getItem}>
+    <button class="btn btn-sm btn-outline-light mt-3" onclick={getItem}>
       <i class="bi bi-arrow-clockwise"></i> {$_("content.retry")}
     </button>
   </div>
@@ -230,7 +244,7 @@ if (initialEvent) {
       <div class="mt-2 text-center">
         <button
           class="btn btn-sm btn-outline-light"
-          on:click={() => (expanded = !expanded)}
+          onclick={() => (expanded = !expanded)}
         >
           {expanded ? $_("content.show_less") : $_("content.show_more")}
         </button>
@@ -243,15 +257,18 @@ if (initialEvent) {
       <div class="position-relative">
         <button
           class="btn btn-sm btn-circle btn-light"
-          on:click|stopPropagation={() => (copyMenuOpen = !copyMenuOpen)}
+          onclick={(event) => {
+            event.stopPropagation();
+            copyMenuOpen = !copyMenuOpen;
+          }}
         >
           <i class="bi bi-copy"></i> COPY
         </button>
         {#if copyMenuOpen}
           <div class="copy-menu">
-            <button class="copy-menu-item" on:click={() => copyAs("note")}>note</button>
-            <button class="copy-menu-item" on:click={() => copyAs("nevent")}>nevent</button>
-            <button class="copy-menu-item" on:click={() => copyAs("hex")}>hex</button>
+            <button class="copy-menu-item" onclick={() => copyAs("note")}>note</button>
+            <button class="copy-menu-item" onclick={() => copyAs("nevent")}>nevent</button>
+            <button class="copy-menu-item" onclick={() => copyAs("hex")}>hex</button>
           </div>
         {/if}
       </div>
@@ -259,7 +276,7 @@ if (initialEvent) {
   </div>
 {/if}
 
-<svelte:window on:click={() => (copyMenuOpen = false)} />
+<svelte:window onclick={() => (copyMenuOpen = false)} />
 
 <style>
   .picture {
