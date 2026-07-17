@@ -5,12 +5,12 @@ import { validateNip19Input } from "$lib/validation";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 
-let nip19 = "";
-let url = "";
-let shareUrl = "";
-let errorKey: string | null = null;
-let origin = "https://nostx.io";
-let canShare = false;
+let nip19 = $state("");
+let url = $state("");
+let shareUrl = $state("");
+let errorKey = $state<string | null>(null);
+let origin = $state("https://nostx.io");
+let canShare = $state(false);
 
 onMount(() => {
 	origin = location.origin;
@@ -89,7 +89,7 @@ const share = async () => {
           {$_("qr.download")}
         </a>
         {#if canShare}
-          <button class="btn btn-outline-light mx-1" on:click={share} type="button">
+          <button class="btn btn-outline-light mx-1" onclick={share} type="button">
             <i class="bi bi-share"></i>
             {$_("qr.share")}
           </button>
@@ -111,7 +111,7 @@ const share = async () => {
         <div class="text-danger mt-2">{$_(errorKey)}</div>
       {/if}
       <div class="mt-3">
-        <button class="btn btn-lg bg-brand px-4" on:click={generate}>
+        <button class="btn btn-lg bg-brand px-4" onclick={generate}>
           {$_("qr.generate")}
         </button>
       </div>
