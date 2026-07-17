@@ -66,6 +66,8 @@
     "sending": "Sending..."
   },
   "a11y": {
+    "copy": "Copy",
+    "language": "Language",
     "profile_qr": "QR code for this profile (npub)",
     "invoice_qr": "QR code for the Lightning invoice",
     "generated_qr": "Generated QR code",

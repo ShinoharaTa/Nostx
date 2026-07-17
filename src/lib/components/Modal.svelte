@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { Snippet } from "svelte";
 import { showModal, closeModal } from "$lib/ui";
+import { _ } from "svelte-i18n";
 let {
 	modalTitle = null,
 	children,
@@ -19,8 +20,12 @@ let {
       <div class="modal-content">
         <div class="modal-header">
           <div class="modal-title">{modalTitle}</div>
-          <!-- svelte-ignore a11y_consider_explicit_label -->
-          <button type="button" class="btn-close" onclick={closeModal}></button>
+          <button
+            type="button"
+            class="btn-close"
+            aria-label={$_("profile.close")}
+            onclick={closeModal}
+          ></button>
         </div>
         <div class="modal-body">
           {@render children?.()}

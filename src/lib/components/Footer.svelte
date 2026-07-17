@@ -1,6 +1,6 @@
 <script lang="ts">
 import { setLocale } from "$lib/i18n";
-import { locale } from "svelte-i18n";
+import { _, locale } from "svelte-i18n";
 
 const current = $derived($locale?.startsWith("ja") ? "ja" : "en");
 </script>
@@ -15,12 +15,22 @@ const current = $derived($locale?.startsWith("ja") ? "ja" : "en");
         Support
       </a>
     </div>
-    <div class="mt-2 lang-switch">
-      <button type="button" class:active={current === "ja"} onclick={() => setLocale("ja")}>
+    <div class="mt-2 lang-switch" role="group" aria-label={$_("a11y.language")}>
+      <button
+        type="button"
+        class:active={current === "ja"}
+        aria-pressed={current === "ja"}
+        onclick={() => setLocale("ja")}
+      >
         日本語
       </button>
-      <span class="sep">|</span>
-      <button type="button" class:active={current === "en"} onclick={() => setLocale("en")}>
+      <span class="sep" aria-hidden="true">|</span>
+      <button
+        type="button"
+        class:active={current === "en"}
+        aria-pressed={current === "en"}
+        onclick={() => setLocale("en")}
+      >
         English
       </button>
     </div>

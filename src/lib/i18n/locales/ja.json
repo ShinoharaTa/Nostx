@@ -66,6 +66,8 @@
     "sending": "送信中..."
   },
   "a11y": {
+    "copy": "コピー",
+    "language": "言語切替",
     "profile_qr": "このプロフィール(npub)を示すQRコード",
     "invoice_qr": "Lightningインボイス支払い用のQRコード",
     "generated_qr": "生成されたQRコード",

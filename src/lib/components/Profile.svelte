@@ -190,12 +190,15 @@ const shareToNpub = () => {
       <div class="position-relative">
         <button
           class="btn btn-sm btn-circle btn-light"
+          aria-label={$_("a11y.copy")}
+          aria-haspopup="menu"
+          aria-expanded={copyMenuOpen}
           onclick={(event) => {
             event.stopPropagation();
             copyMenuOpen = !copyMenuOpen;
           }}
         >
-          <i class="bi bi-copy"></i> COPY
+          <i class="bi bi-copy" aria-hidden="true"></i> COPY
         </button>
         {#if copyMenuOpen}
           <div class="copy-menu">
@@ -206,13 +209,23 @@ const shareToNpub = () => {
         {/if}
       </div>
       <div>
-        <button class="btn btn-sm btn-circle btn-light" disabled={!navigator.share} onclick={shareToNpub}>
-          <i class="bi bi-share-fill"></i> SHARE
+        <button
+          class="btn btn-sm btn-circle btn-light"
+          aria-label={$_("qr.share")}
+          disabled={!navigator.share}
+          onclick={shareToNpub}
+        >
+          <i class="bi bi-share-fill" aria-hidden="true"></i> SHARE
         </button>
       </div>
       <div>
-        <button class="btn btn-sm btn-circle btn-warning" disabled={!metadata.lud16} onclick={sendZapHandle}>
-          <i class="bi bi-lightning-charge-fill"></i> ZAP
+        <button
+          class="btn btn-sm btn-circle btn-warning"
+          aria-label={$_("profile.send_zap")}
+          disabled={!metadata.lud16}
+          onclick={sendZapHandle}
+        >
+          <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i> ZAP
         </button>
       </div>
     </div>

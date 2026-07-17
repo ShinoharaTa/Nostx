@@ -261,12 +261,15 @@ if (initialEvent) {
       <div class="position-relative">
         <button
           class="btn btn-sm btn-circle btn-light"
+          aria-label={$_("a11y.copy")}
+          aria-haspopup="menu"
+          aria-expanded={copyMenuOpen}
           onclick={(event) => {
             event.stopPropagation();
             copyMenuOpen = !copyMenuOpen;
           }}
         >
-          <i class="bi bi-copy"></i> COPY
+          <i class="bi bi-copy" aria-hidden="true"></i> COPY
         </button>
         {#if copyMenuOpen}
           <div class="copy-menu">
