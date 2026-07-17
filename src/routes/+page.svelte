@@ -47,7 +47,7 @@ const paste = async () => {
 <div class="page">
   <div class="px-4 pt-5">
     <div class="text-center">
-      <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="" />
+      <img src="/image/nostxlogo.svg" class="img-fluid w-75" alt="Nostx" />
       <div class="fs-3 mt-3">{$_("top.catchphrase")}</div>
     </div>
     <div class="mt-5 text-center">

@@ -35,12 +35,30 @@ input[type='radio'] {
   display: none;
 }
 
+// 黒背景でもキーボードフォーカスが見えるようにフォーカスリングを明示する
+// (.btn は Bootstrap が outline: 0 にするため明示的に上書きする)
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid #eee;
+  outline-offset: 2px;
+}
+
 .item {
   background: #222;
   border-radius: 12px;
   padding: 0.6rem 2.5rem;
   border: 1px #444 solid;
   color: #eee
+}
+
+// Bootstrap 標準の danger (#dc3545) は黒背景で WCAG AA (4.5:1) を満たさないため
+// 明るめの赤に調整する (#ff6b6b: #101010 上で 6.86:1、#222 上で 5.73:1)
+.text-danger,
+.border-danger {
+  --bs-danger-rgb: 255, 107, 107;
 }
 
 .error_icon {
