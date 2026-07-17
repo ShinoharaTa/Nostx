@@ -13,14 +13,14 @@ import { nip19 as nip19tools } from "nostr-tools";
 import { validateNip19Input } from "$lib/validation";
 import type { PageData } from "./$types";
 
-export let data: PageData;
+let { data }: { data: PageData } = $props();
 
 const key: string = page.params.nip19;
 const validation = validateNip19Input(key);
 
-let nip19decode: DecodeResult | null;
-let process = true;
-let isMobile = false;
+let nip19decode = $state<DecodeResult | null>();
+let process = $state(true);
+let isMobile = $state(false);
 
 // ---- サーバー(load)で取得済みの OGP 用データ ----
 const ogp = data.ogp;
@@ -64,9 +64,9 @@ const resolveDisplayName = (pubkey: string): string => {
 // ---- OGP メタタグの値を組み立てる(データなし時は汎用 OGP) ----
 const GENERIC_OGP_DESCRIPTION =
 	"Nostx is a redirect service that opens Nostr profiles and notes in your favorite Nostr apps.";
-let ogTitle = "Nostx";
-let ogDescription = GENERIC_OGP_DESCRIPTION;
-let ogImage = `${page.url.origin}/image/nostxlogo.svg`;
+let ogTitle = $state("Nostx");
+let ogDescription = $state(GENERIC_OGP_DESCRIPTION);
+let ogImage = $state(`${page.url.origin}/image/nostxlogo.svg`);
 
 const serverPicture = serverProfile?.picture;
 if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
@@ -88,9 +88,9 @@ if (ogp && (ogp.type === "npub" || ogp.type === "nprofile") && ogp.profile) {
 }
 
 const appsClient = clients.find((client) => client.key === "apps");
-$: listClients = isMobile
-	? clients.filter((client) => client.key !== "apps")
-	: clients;
+const listClients = $derived(
+	isMobile ? clients.filter((client) => client.key !== "apps") : clients,
+);
 
 onMount(async () => {
 	isMobile =
