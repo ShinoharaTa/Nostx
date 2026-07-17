@@ -35,6 +35,15 @@ input[type='radio'] {
   display: none;
 }
 
+// 黒背景でもキーボードフォーカスが見えるようにフォーカスリングを明示する
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #eee;
+  outline-offset: 2px;
+}
+
 .item {
   background: #222;
   border-radius: 12px;

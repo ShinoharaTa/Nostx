@@ -283,7 +283,13 @@ if (initialEvent) {
   </div>
 {/if}
 
-<svelte:window onclick={() => (copyMenuOpen = false)} />
+<svelte:window
+  onclick={() => (copyMenuOpen = false)}
+  onkeydown={(event) => {
+    // Esc でコピーメニューを閉じる(キーボード操作対応)
+    if (event.key === "Escape") copyMenuOpen = false;
+  }}
+/>
 
 <style>
   .picture {
@@ -357,7 +363,8 @@ if (initialEvent) {
     font-size: 13px;
   }
 
-  .copy-menu-item:hover {
+  .copy-menu-item:hover,
+  .copy-menu-item:focus-visible {
     background: #444;
   }
 </style>
