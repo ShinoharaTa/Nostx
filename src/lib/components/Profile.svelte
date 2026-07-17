@@ -162,18 +162,18 @@ const shareToNpub = () => {
       {metadata.about}
     </div>
     {#if metadata.website}
-      <div class="mt-2">
+      <div class="mt-2 text-break">
         <strong>WEB SITE: </strong>
         <a href={metadata.website} target="_blank" rel="noopener noreferrer">{metadata.website}</a>
       </div>
     {/if}
     {#if metadata.nip05}
-      <div class="mt-2">
+      <div class="mt-2 text-break">
         <strong>NIP-05:</strong> {metadata.nip05} {nip05Verify}
       </div>
     {/if}
     {#if metadata.lud16}
-      <div class="mt-2">
+      <div class="mt-2 text-break">
         <strong>LUD16:</strong> {metadata.lud16}
       </div>
     {/if}
