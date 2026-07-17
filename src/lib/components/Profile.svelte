@@ -10,6 +10,8 @@ import { queryProfile, type Nip05 } from "nostr-tools/nip05";
 
 export let id: string;
 export let relays: string[] = [];
+// サーバー(+page.server.ts)で取得済みのプロフィール(あればクライアント再取得をスキップする)
+export let initialMetadata: { [key: string]: string } | null = null;
 let metadata: { [key: string]: string } | null = null;
 let status: "loading" | "loaded" | "failed" = "loading";
 let qrString = "";
@@ -17,21 +19,8 @@ let npub = "";
 let nip05Verify= "";
 
 $: shortNpub = npub ? `${npub.slice(0, 12)}...` : "";
-const getItem = async () => {
-	status = "loading";
-	try {
-		const data = await getSingleItem({ kind: 0, author: id, relays });
-		if (!data) {
-			status = "failed";
-			return;
-		}
-		metadata = JSON.parse(data.content);
-	} catch {
-		// タイムアウトを含む取得失敗
-		status = "failed";
-		return;
-	}
-	status = "loaded";
+// プロフィール取得後の付随処理(npub表示・QRコード生成・NIP-05検証)
+const applyMetadataExtras = async () => {
 	npub = nip19.npubEncode(id);
 	const opts = {
 		quality: 0.3,
@@ -57,7 +46,31 @@ const getItem = async () => {
 		}
 	}
 };
-getItem();
+const getItem = async () => {
+	status = "loading";
+	try {
+		const data = await getSingleItem({ kind: 0, author: id, relays });
+		if (!data) {
+			status = "failed";
+			return;
+		}
+		metadata = JSON.parse(data.content);
+	} catch {
+		// タイムアウトを含む取得失敗
+		status = "failed";
+		return;
+	}
+	status = "loaded";
+	await applyMetadataExtras();
+};
+if (initialMetadata) {
+	// サーバー取得済みのプロフィールがあれば再取得せずに使う
+	metadata = initialMetadata;
+	status = "loaded";
+	applyMetadataExtras();
+} else {
+	getItem();
+}
 
 const sendZapHandle = () => {
 	openModal();
