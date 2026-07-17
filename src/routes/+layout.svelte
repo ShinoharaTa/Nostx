@@ -3,6 +3,8 @@ import "$lib/styles/style.scss";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Footer from "$lib/components/Footer.svelte";
 import { page } from "$app/state";
+
+let { children } = $props();
 </script>
 
 <svelte:head>
@@ -21,7 +23,7 @@ import { page } from "$app/state";
 </svelte:head>
 
 <div class="h-min-100vh">
-  <slot />
+  {@render children?.()}
   <Footer></Footer>
 </div>
 <style>
