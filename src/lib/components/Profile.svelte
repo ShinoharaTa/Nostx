@@ -28,11 +28,12 @@ const shortNpub = $derived(npub ? `${npub.slice(0, 12)}...` : "");
 // プロフィール取得後の付随処理(npub表示・QRコード生成・NIP-05検証)
 const applyMetadataExtras = async () => {
 	npub = nip19.npubEncode(id);
+	// 読み取り性優先: 白背景に濃色モジュールのシンプルなQRにする
 	const opts = {
 		quality: 0.3,
 		color: {
-			dark: "#fff",
-			light: "#0000",
+			dark: "#101010",
+			light: "#ffffff",
 		},
 	};
 	QRCode.toDataURL(`nostr:${npub}`, opts)
@@ -315,11 +316,8 @@ const shareToNpub = () => {
   }
 
   .qr_background {
-    background: linear-gradient(
-      135deg,
-      #5a3e8b 5%,
-      #b75fa2 50%,
-      #ff914d 95%
-    );
+    background: #fff;
+    padding: 0.5rem;
+    border-radius: 8px;
   }
 </style>
