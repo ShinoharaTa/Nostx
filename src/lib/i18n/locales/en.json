@@ -1,5 +1,8 @@
 {
   "test": "test",
+  "clients": {
+    "apps": "Open in your app"
+  },
   "app": {
     "client_select": "Select apps",
     "last_used": "Last used app",

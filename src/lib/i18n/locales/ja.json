@@ -1,5 +1,8 @@
 {
   "test": "テスト",
+  "clients": {
+    "apps": "アプリで開く"
+  },
   "app": {
     "client_select": "アプリを選択",
     "last_used": "前回使ったアプリ",
