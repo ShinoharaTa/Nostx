@@ -2,6 +2,7 @@
 import type { Client } from "$lib/const";
 import { setLastClientKey } from "$lib/preferences";
 import {
+	naddrEncode,
 	neventEncode,
 	noteEncode,
 	nprofileEncode,
@@ -43,6 +44,11 @@ const linkUrl = () => {
 	} else if (result.type === "nevent") {
 		nip19Encode = noteEncode(result.data.id);
 		clientUrl = client.url.note;
+	}
+	// naddr は対応クライアント(url.naddr あり)のみボタンが表示される前提
+	if (result.type === "naddr" && client.url.naddr) {
+		nip19Encode = naddrEncode(result.data);
+		clientUrl = client.url.naddr;
 	}
 	return clientUrl + nip19Encode;
 };

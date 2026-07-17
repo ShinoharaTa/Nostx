@@ -44,6 +44,11 @@
     "copied": "コピーしました",
     "copy_failed": "コピーに失敗しました"
   },
+  "article": {
+    "badge": "長文記事",
+    "fetch_failed": "記事の取得に失敗しました",
+    "retry": "再試行"
+  },
   "profile": {
     "fetch_failed": "プロフィールの取得に失敗しました",
     "retry": "再試行",
